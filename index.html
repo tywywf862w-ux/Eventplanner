@@ -1,0 +1,2709 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wedding Planner</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#16294D">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-180.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Wedding Planner">
+<meta name="mobile-web-app-capable" content="yes">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap');
+
+  :root{
+    --bg:#0A0F1C;
+    --panel:#121B2E;
+    --panel-raised:#16223A;
+    --line: rgba(255,255,255,0.08);
+    --line-strong: rgba(255,255,255,0.14);
+    --wash-1: rgba(255,255,255,0.025);
+    --wash-2: rgba(255,255,255,0.04);
+    --wash-3: rgba(255,255,255,0.06);
+    --wash-4: rgba(255,255,255,0.05);
+    --card-gloss: linear-gradient(160deg, rgba(255,255,255,0.05), transparent 40%);
+    --field-bg: rgba(0,0,0,0.2);
+    --field-bg-strong: rgba(0,0,0,0.25);
+    --table-head-bg: rgba(0,0,0,0.22);
+    --teal:#4DD0C4;
+    --teal-rgb: 77,208,196;
+    --teal-dim:#2C8E85;
+    --accent2:#8B93F0;
+    --accent2-rgb: 122,139,232;
+    --amber:#E8B04B;
+    --rose:#E2637B;
+    --violet:#8B93F0;
+    --text:#E8EDF5;
+    --heading:#FFFFFF;
+    --text-dim:#8493AD;
+    --text-faint:#5A6980;
+    --danger:#E2637B;
+    --good:#4DD0C4;
+    --radius:16px;
+    --shadow-panel: 0 1px 0 rgba(255,255,255,0.06) inset,
+                     0 -1px 0 rgba(0,0,0,0.4) inset,
+                     0 14px 30px -14px rgba(0,0,0,0.55),
+                     0 2px 6px rgba(0,0,0,0.3);
+    --shadow-raised: 0 1px 0 rgba(255,255,255,0.08) inset,
+                      0 18px 36px -16px rgba(0,0,0,0.6),
+                      0 3px 10px rgba(0,0,0,0.4);
+  }
+  /* Accent color themes — switched via data-theme on <html>, picked from
+     the color swatch in the header. Each overrides the teal accent (and
+     its rgba glow companion) plus the secondary gradient color; every
+     other token (backgrounds, text, danger/amber) stays constant so the
+     rest of the interface never needs to be redesigned per theme. */
+  html[data-theme="red"]      { --teal:#E8544B; --teal-rgb:232,84,75;   --teal-dim:#A83A32; --accent2:#F09990; --accent2-rgb:240,153,144; --violet:#F09990; }
+  html[data-theme="blue"]     { --teal:#4A9DE8; --teal-rgb:74,157,232;  --teal-dim:#2C6EA8; --accent2:#8BC2F0; --accent2-rgb:139,194,240; --violet:#8BC2F0; }
+  html[data-theme="green"]    { --teal:#4BC77A; --teal-rgb:75,199,122;  --teal-dim:#2E8F55; --accent2:#9BE3B4; --accent2-rgb:155,227,180; --violet:#9BE3B4; }
+  html[data-theme="rose"]     { --teal:#E2637B; --teal-rgb:226,99,123;  --teal-dim:#A8435A; --accent2:#F0A0AF; --accent2-rgb:240,160,175; --violet:#F0A0AF; }
+  html[data-theme="violet"]   { --teal:#B78BF0; --teal-rgb:183,139,240; --teal-dim:#8259B5; --accent2:#D9C2F5; --accent2-rgb:217,194,245; --violet:#D9C2F5; }
+  html[data-theme="amber"]    { --teal:#E8C24B; --teal-rgb:232,194,75;  --teal-dim:#A88A2C; --accent2:#F0DD8B; --accent2-rgb:240,221,139; --violet:#F0DD8B; }
+  html[data-theme="coral"]    { --teal:#F0806B; --teal-rgb:240,128,107; --teal-dim:#B5573F; --accent2:#F5B0A0; --accent2-rgb:245,176,160; --violet:#F5B0A0; }
+  html[data-theme="sky"]      { --teal:#7EC8F0; --teal-rgb:126,200,240; --teal-dim:#4F93B8; --accent2:#BEE3F5; --accent2-rgb:190,227,245; --violet:#BEE3F5; }
+  html[data-theme="magenta"]  { --teal:#C74BC7; --teal-rgb:199,75,199;  --teal-dim:#8F2E8F; --accent2:#E3A0E3; --accent2-rgb:227,160,227; --violet:#E3A0E3; }
+  html[data-theme="silver"]   { --teal:#B8C2D0; --teal-rgb:184,194,208; --teal-dim:#828C99; --accent2:#DDE3EA; --accent2-rgb:221,227,234; --violet:#DDE3EA; }
+  html[data-theme="orange"]   { --teal:#E88A3D; --teal-rgb:232,138,61;  --teal-dim:#A8611F; --accent2:#F0BC8B; --accent2-rgb:240,188,139; --violet:#F0BC8B; }
+
+  /* Panel tone themes — the color of the dark boxes themselves (header,
+     cards, tables), switched via data-panel on <html>, picked from the
+     second row of the color picker. Kept deliberately dark and low-
+     saturation so white text and the accent color both stay legible;
+     this is a tint of the panel, not a bright background swap. */
+  html[data-panel="navy"]     { --bg:#0A1428; --panel:#16294D; --panel-raised:#1C3260; --line:rgba(255,255,255,0.10); --line-strong:rgba(255,255,255,0.18); --text-dim:#A9B8D4; }
+  html[data-panel="charcoal"] { --bg:#1A1A1F; --panel:#2E2E38; --panel-raised:#383843; --line:rgba(255,255,255,0.10); --line-strong:rgba(255,255,255,0.18); --text-dim:#ADADB8; }
+  html[data-panel="plum"]     { --bg:#1E1129; --panel:#4A2768; --panel-raised:#5A317F; --line:rgba(255,255,255,0.12); --line-strong:rgba(255,255,255,0.20); --text-dim:#C7ADE0; }
+  html[data-panel="forest"]   { --bg:#0D2016; --panel:#1F4A30; --panel-raised:#265A3A; --line:rgba(255,255,255,0.10); --line-strong:rgba(255,255,255,0.18); --text-dim:#A9CDB6; }
+  html[data-panel="wine"]     { --bg:#26101A; --panel:#5C2233; --panel-raised:#6E293D; --line:rgba(255,255,255,0.12); --line-strong:rgba(255,255,255,0.20); --text-dim:#DBAAB8; }
+  html[data-panel="slate"]    { --bg:#0F1D2E; --panel:#243F5C; --panel-raised:#2C4C6E; --line:rgba(255,255,255,0.10); --line-strong:rgba(255,255,255,0.18); --text-dim:#AEC3DC; }
+  html[data-panel="ivory"]    {
+    --bg:#FBF3EC; --panel:#FFFFFF; --panel-raised:#FDF6EF;
+    --line:rgba(150,89,42,0.16); --line-strong:rgba(150,89,42,0.28);
+    --text:#6B4A3D; --heading:#5C3A2E; --text-dim:#7D5A4E; --text-faint:#A98A79;
+    --wash-1:rgba(150,89,42,0.035); --wash-2:rgba(150,89,42,0.05); --wash-3:rgba(150,89,42,0.07); --wash-4:rgba(150,89,42,0.06);
+    --card-gloss: linear-gradient(160deg, rgba(255,255,255,0.5), transparent 45%);
+    --field-bg: rgba(150,89,42,0.045); --field-bg-strong: rgba(150,89,42,0.06); --table-head-bg: rgba(150,89,42,0.07);
+    --shadow-panel: 0 14px 30px -18px rgba(92,58,46,0.22), 0 2px 6px rgba(92,58,46,0.08);
+    --shadow-raised: 0 18px 36px -18px rgba(92,58,46,0.24), 0 3px 10px rgba(92,58,46,0.1);
+  }
+  /* Ornamental touches for the Ivory & Rose theme: a warm serif for
+     headings (echoing invitation typography) and a thin gold double-edge
+     on major panels, evoking a card border without any photographic
+     imagery competing with the data. */
+  html[data-panel="ivory"] h1.display,
+  html[data-panel="ivory"] .modal h3,
+  html[data-panel="ivory"] .section-head h2,
+  html[data-panel="ivory"] .gauge-value,
+  html[data-panel="ivory"] .stat-value,
+  html[data-panel="ivory"] .countdown-num{
+    font-family:'Playfair Display', 'Space Grotesk', serif;
+  }
+  html[data-panel="ivory"] .topbar-panel,
+  html[data-panel="ivory"] .panel,
+  html[data-panel="ivory"] .modal,
+  html[data-panel="ivory"] .gauge-card,
+  html[data-panel="ivory"] .stat-card{
+    box-shadow: 0 0 0 1px rgba(150,89,42,0.35), 0 0 0 4px rgba(150,89,42,0.07), 0 14px 30px -14px rgba(92,58,46,0.18), 0 2px 6px rgba(92,58,46,0.08);
+  }
+  html[data-panel="ivory"] .topbar-panel::before{
+    background: radial-gradient(500px 260px at 85% -10%, rgba(184,118,63,0.14), transparent 65%);
+  }
+  html[data-panel="ivory"] .eyebrow::before{
+    background:#96592A; box-shadow:0 0 8px 2px rgba(150,89,42,0.35);
+  }
+  html[data-panel="ivory"] .section-head h2::before{
+    background:linear-gradient(180deg, #B8763F, #96592A);
+  }
+  html[data-panel="ivory"] body{
+    background-image:
+      radial-gradient(1200px 600px at 20% -10%, rgba(var(--teal-rgb),0.10), transparent 60%),
+      radial-gradient(900px 500px at 100% 0%, rgba(var(--accent2-rgb),0.08), transparent 55%),
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220' viewBox='0 0 220 220'%3E%3Cg fill='none' stroke='%23B8763F' stroke-width='1.6' stroke-linecap='round' opacity='0.16'%3E%3Cpath d='M20 120 Q30 90 55 82 Q78 75 92 90'/%3E%3Cpath d='M20 120 Q40 108 42 86'/%3E%3C/g%3E%3Cg transform='translate(46,92)' opacity='0.18'%3E%3Ccircle r='11' fill='none' stroke='%23C2455E' stroke-width='1.6'/%3E%3Cpath d='M-6 -2 Q0 -9 6 -2 Q3 2 0 0 Q-3 2 -6 -2 Z' fill='none' stroke='%23C2455E' stroke-width='1.2'/%3E%3C/g%3E%3Cg fill='%237A9962' opacity='0.15'%3E%3Cellipse cx='24' cy='128' rx='4' ry='10' transform='rotate(30 24 128)'/%3E%3Cellipse cx='150' cy='40' rx='4' ry='10' transform='rotate(-35 150 40)'/%3E%3C/g%3E%3Cg transform='translate(160,50) scale(0.55)' opacity='0.14'%3E%3Ccircle r='11' fill='none' stroke='%23C2455E' stroke-width='1.6'/%3E%3Cpath d='M-6 -2 Q0 -9 6 -2 Q3 2 0 0 Q-3 2 -6 -2 Z' fill='none' stroke='%23C2455E' stroke-width='1.2'/%3E%3C/g%3E%3C/svg%3E");
+    background-repeat: no-repeat, no-repeat, repeat;
+    background-size: auto, auto, 220px 220px;
+  }
+  *{box-sizing:border-box;}
+  html{ background:var(--bg); }
+  body{
+    margin:0;
+    background-color:var(--bg);
+    background-image:
+      radial-gradient(1200px 600px at 20% -10%, rgba(var(--teal-rgb),0.14), transparent 60%),
+      radial-gradient(900px 500px at 100% 0%, rgba(var(--accent2-rgb),0.10), transparent 55%);
+    background-repeat:no-repeat;
+    min-height:100vh;
+    color:var(--text);
+    font-family:'Inter',sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3,.display{ font-family:'Space Grotesk',sans-serif; letter-spacing:-0.01em; }
+
+  /* ---------- Header ---------- */
+  .topbar{ padding:32px 24px 0; position:relative; }
+  .topbar-panel{
+    max-width:1160px; margin:0 auto;
+    background: linear-gradient(160deg, var(--panel-raised) 0%, var(--panel) 100%);
+    border:1px solid var(--line-strong);
+    border-radius:20px;
+    box-shadow: var(--shadow-raised);
+    padding:28px 28px 24px;
+    position:relative;
+    overflow:hidden;
+  }
+  .topbar-panel::before{
+    content:""; position:absolute; inset:0;
+    background: radial-gradient(500px 260px at 85% -10%, rgba(var(--teal-rgb),0.16), transparent 65%);
+    pointer-events:none;
+  }
+  .topbar-grid{ display:grid; grid-template-columns: 1fr auto; gap:24px; align-items:center; position:relative; z-index:1; }
+
+  /* Original line-art floral corner decoration, shown only for the
+     Ivory & Rose theme. Positioned in the panel corners, away from
+     text and controls, so it never competes with readability. */
+  .corner-floral{ display:none; position:absolute; width:160px; height:160px; pointer-events:none; z-index:0; }
+  .corner-floral-tl{ top:-14px; left:-14px; }
+  .corner-floral-br{ bottom:-14px; right:-14px; }
+  html[data-panel="ivory"] .corner-floral{ display:block; }
+  @media (max-width:640px){ .corner-floral{ width:96px; height:96px; } }
+  .eyebrow{
+    font-size:10.5px; letter-spacing:0.18em; text-transform:uppercase;
+    color:var(--teal); font-weight:600; margin-bottom:8px; display:flex; align-items:center; gap:8px;
+  }
+  .eyebrow::before{
+    content:""; width:6px; height:6px; border-radius:50%; background:var(--teal);
+    box-shadow:0 0 8px 2px rgba(var(--teal-rgb),0.7);
+  }
+  h1.display{ font-size:32px; font-weight:600; margin:0 0 6px; color:var(--heading); }
+  .subtitle{ font-size:13.5px; color:var(--text-dim); max-width:480px; line-height:1.55; margin-bottom:18px; }
+  .date-edit{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; position:relative; }
+  .date-edit label{font-size:11px; color:var(--text-faint); text-transform:uppercase; letter-spacing:0.05em; font-weight:600;}
+  .date-edit .field-wrap{ display:flex; align-items:center; gap:8px; background:var(--field-bg-strong); border:1px solid var(--line); border-radius:9px; padding:5px 10px 5px 12px; }
+  .date-edit input{ background:transparent; border:none; color:var(--text); font-family:'Space Grotesk',sans-serif; font-size:13px; font-weight:500; }
+  .date-edit input:focus{ outline:none; }
+  .date-edit input::-webkit-calendar-picker-indicator{filter:invert(0.7); cursor:pointer;}
+  .date-edit input[type=number]{width:110px;}
+
+  /* ---------- Accent color picker ---------- */
+  .theme-toggle{
+    width:34px; height:34px; border-radius:10px; flex-shrink:0; cursor:pointer;
+    background: var(--panel-raised);
+    border:1px solid var(--line-strong);
+    box-shadow: var(--shadow-panel);
+    position:absolute; top:16px; right:16px; z-index:2;
+    display:flex; align-items:center; justify-content:center;
+    color:var(--text-dim);
+    transition: transform 0.15s, color 0.15s, border-color 0.15s;
+  }
+  .theme-toggle:hover{ transform:scale(1.06); color:var(--teal); border-color:rgba(var(--teal-rgb),0.4); }
+  .sync-toggle{
+    width:34px; height:34px; border-radius:10px; flex-shrink:0; cursor:pointer;
+    background: var(--panel-raised);
+    border:1px solid var(--line-strong);
+    box-shadow: var(--shadow-panel);
+    position:absolute; top:16px; right:58px; z-index:2;
+    display:flex; align-items:center; justify-content:center;
+    color:var(--text-dim);
+    transition: transform 0.15s, color 0.15s, border-color 0.15s;
+  }
+  .sync-toggle:hover{ transform:scale(1.06); color:var(--teal); border-color:rgba(var(--teal-rgb),0.4); }
+  .sync-toggle.syncing svg{ animation: sync-spin 0.7s linear; }
+  @keyframes sync-spin{ to{ transform:rotate(360deg); } }
+  .sync-status{
+    position:absolute; top:54px; right:16px; z-index:3;
+    background:var(--panel-raised); border:1px solid var(--line-strong); border-radius:8px;
+    padding:6px 10px; font-size:11px; color:var(--text-dim); white-space:nowrap;
+    box-shadow: var(--shadow-panel);
+    opacity:0; pointer-events:none; transform:translateY(-4px);
+    transition: opacity 0.2s, transform 0.2s;
+  }
+  .sync-status.visible{ opacity:1; transform:translateY(0); }
+  @media (max-width:640px){
+    .theme-toggle{ top:12px; right:12px; }
+    .sync-toggle{ top:12px; right:54px; }
+    .sync-status{ top:50px; right:12px; }
+  }
+  .theme-popover{
+    display:none;
+    position:fixed; z-index:60;
+    background: linear-gradient(160deg, var(--panel-raised), var(--panel));
+    border:1px solid var(--line-strong); border-radius:16px;
+    padding:14px 16px 16px;
+    box-shadow: 0 24px 50px -16px rgba(0,0,0,0.65), 0 1px 0 rgba(255,255,255,0.08) inset;
+    min-width:252px;
+  }
+  .theme-popover.active{ display:block; }
+  .theme-popover-title{ font-size:10.5px; text-transform:uppercase; letter-spacing:0.06em; color:var(--text-faint); font-weight:700; margin-bottom:10px; }
+  .swatch-grid{ display:grid; grid-template-columns:repeat(6, 1fr); gap:10px; }
+  .swatch{
+    width:32px; height:32px; border-radius:50%; cursor:pointer; position:relative;
+    border:none; box-shadow: 0 2px 6px rgba(0,0,0,0.35), 0 1px 0 rgba(255,255,255,0.2) inset;
+    transition: transform 0.12s;
+  }
+  .swatch:hover{ transform:scale(1.1); }
+  .swatch.active::after{
+    content:""; position:absolute; inset:-4px; border-radius:50%;
+    border:2px solid #fff; box-shadow:0 0 0 2px rgba(0,0,0,0.3);
+  }
+  .panel-swatch{
+    width:32px; height:32px; border-radius:9px; cursor:pointer; position:relative;
+    border:1px solid rgba(255,255,255,0.14);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.35), 0 1px 0 rgba(255,255,255,0.08) inset;
+    transition: transform 0.12s;
+  }
+  .panel-swatch:hover{ transform:scale(1.1); }
+  .panel-swatch.active::after{
+    content:""; position:absolute; inset:-4px; border-radius:11px;
+    border:2px solid #fff; box-shadow:0 0 0 2px rgba(0,0,0,0.3);
+  }
+
+
+  /* ---------- Countdown dial (signature element) ---------- */
+  .countdown-dial{ width:132px; height:132px; position:relative; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+  .countdown-dial svg{ width:100%; height:100%; transform:rotate(-90deg); filter: drop-shadow(0 0 10px rgba(var(--teal-rgb),0.35)); }
+  .countdown-dial .track{ fill:none; stroke:rgba(255,255,255,0.08); stroke-width:8; }
+  .countdown-dial .fill{ fill:none; stroke:url(#dialGrad); stroke-width:8; stroke-linecap:round; transition:stroke-dashoffset 0.6s ease; }
+  .countdown-center{ position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; }
+  .countdown-num{ font-family:'Space Grotesk',sans-serif; font-size:26px; font-weight:700; color:var(--heading); line-height:1; }
+  .countdown-label{ font-size:9px; color:var(--text-dim); text-transform:uppercase; letter-spacing:0.08em; margin-top:4px; max-width:90px; line-height:1.3; }
+
+  /* ---------- Tabs ---------- */
+  .tabs-wrap{ max-width:1160px; margin:18px auto 0; padding:0 24px; }
+  .tabs{
+    display:flex; gap:4px; background:var(--panel); border:1px solid var(--line-strong);
+    padding:6px; border-radius:14px; box-shadow: var(--shadow-panel); overflow-x:auto;
+  }
+  .tab-btn{
+    flex:1; min-width:fit-content; padding:11px 16px; border:none; background:transparent;
+    color:var(--text-dim); font-family:'Inter',sans-serif; font-weight:600; font-size:12.5px;
+    border-radius:9px; cursor:pointer; transition:all 0.15s ease; white-space:nowrap; letter-spacing:0.01em;
+  }
+  .tab-btn:hover{ color:var(--text); background:var(--wash-2); }
+  .tab-btn.active{
+    background: linear-gradient(160deg, var(--panel-raised), var(--panel)); color:var(--heading);
+    box-shadow: 0 1px 0 rgba(255,255,255,0.1) inset, 0 4px 12px -4px rgba(0,0,0,0.5), 0 0 0 1px var(--line-strong);
+  }
+
+  .container{ max-width:1160px; margin:0 auto; padding:24px 24px 60px; }
+  .view{display:none;}
+  .view.active{display:block;}
+
+  /* ---------- Overview: gauge stat cards ---------- */
+  .gauge-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(190px,1fr)); gap:14px; margin-bottom:26px; }
+  .gauge-card{
+    background: linear-gradient(160deg, var(--panel-raised), var(--panel));
+    border:1px solid var(--line-strong); border-radius:var(--radius); padding:18px;
+    box-shadow: var(--shadow-panel); display:flex; align-items:center; gap:14px; position:relative;
+  }
+  .gauge-card::after{
+    content:""; position:absolute; inset:0; border-radius:var(--radius);
+    background:var(--card-gloss); pointer-events:none;
+  }
+  .gauge-ring{ width:58px; height:58px; flex-shrink:0; position:relative; }
+  .gauge-ring svg{ width:100%; height:100%; transform:rotate(-90deg); }
+  .gauge-ring .track{ fill:none; stroke:rgba(255,255,255,0.07); stroke-width:6; }
+  .gauge-ring .fill{ fill:none; stroke-width:6; stroke-linecap:round; transition:stroke-dashoffset 0.6s ease; }
+  .gauge-body{ min-width:0; }
+  .gauge-label{ font-size:10.5px; text-transform:uppercase; letter-spacing:0.06em; color:var(--text-faint); font-weight:600; margin-bottom:4px; }
+  .gauge-value{ font-family:'Space Grotesk',sans-serif; font-size:19px; font-weight:700; color:var(--heading); line-height:1.15; }
+  .gauge-sub{ font-size:11px; color:var(--text-dim); margin-top:2px; }
+
+  .budget-bar-track{ height:8px; background:var(--wash-3); border-radius:999px; overflow:hidden; margin-top:8px; border:1px solid var(--line); }
+  .budget-bar-fill{ height:100%; background:linear-gradient(90deg, var(--teal), var(--violet)); border-radius:999px; box-shadow:0 0 8px rgba(var(--teal-rgb),0.5); }
+  .gauge-card.warn .gauge-value{color:var(--rose);}
+  .gauge-card.good .gauge-value{color:var(--teal);}
+
+  .stat-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(190px,1fr)); gap:14px; margin-bottom:16px; }
+  .guest-stat-grid{ grid-template-columns:repeat(4, 1fr); gap:10px; }
+  @media (max-width:640px){
+    .guest-stat-grid{ grid-template-columns:repeat(2, 1fr); }
+  }
+  .stat-card{
+    background: linear-gradient(160deg, var(--panel-raised), var(--panel));
+    border:1px solid var(--line-strong); border-radius:var(--radius); padding:16px 18px; box-shadow: var(--shadow-panel);
+  }
+  .stat-label{ font-size:10.5px; text-transform:uppercase; letter-spacing:0.06em; color:var(--text-faint); font-weight:600; margin-bottom:8px; }
+  .stat-value{ font-family:'Space Grotesk',sans-serif; font-size:22px; font-weight:700; color:var(--heading); }
+  .stat-value.small{font-size:18px;}
+  .stat-sub{font-size:11px; color:var(--text-dim); margin-top:4px;}
+  .stat-card.warn .stat-value{color:var(--rose);}
+  .stat-card.good .stat-value{color:var(--teal);}
+
+  /* ---------- Section headers ---------- */
+  .section-head{ display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; gap:12px; flex-wrap:wrap; }
+  .section-head h2{
+    font-size:18px; font-weight:600; margin:0; color:var(--heading); display:flex; align-items:center; gap:10px;
+    background: var(--bg); padding:4px 2px; border-radius:6px;
+  }
+  .section-head h2::before{ content:""; width:4px; height:18px; border-radius:2px; background:linear-gradient(180deg, var(--teal), var(--violet)); display:inline-block; flex-shrink:0; }
+  .head-actions{ display:flex; gap:8px; flex-wrap:wrap; }
+
+  .btn{
+    background: linear-gradient(160deg, var(--teal), var(--teal-dim)); color:#062521; border:none; padding:10px 18px; border-radius:10px;
+    font-family:'Inter',sans-serif; font-weight:700; font-size:12.5px; cursor:pointer;
+    transition:filter 0.15s, transform 0.1s; display:inline-flex; align-items:center; gap:6px;
+    box-shadow: 0 1px 0 rgba(255,255,255,0.3) inset, 0 6px 16px -6px rgba(var(--teal-rgb),0.5);
+  }
+  .btn:hover{ filter:brightness(1.08); }
+  .btn:active{ transform:translateY(1px); }
+  .btn.secondary{ background:var(--panel-raised); color:var(--text); border:1px solid var(--line-strong); box-shadow: var(--shadow-panel); }
+  .btn.secondary:hover{ border-color:var(--teal); color:var(--teal); }
+  .btn.ghost{ background:transparent; color:var(--text-dim); border:1px solid var(--line); padding:7px 13px; font-size:11.5px; font-weight:600; }
+  .btn.ghost:hover{border-color:var(--rose); color:var(--rose);}
+  .btn.danger-ghost{color:var(--rose); border-color:rgba(226,99,123,0.3);}
+  .btn.danger-ghost:hover{background:rgba(226,99,123,0.1); border-color:var(--rose);}
+  .btn.danger-solid{ background:linear-gradient(160deg, #E2637B, #C2455E); color:#fff; box-shadow:0 1px 0 rgba(255,255,255,0.2) inset, 0 6px 16px -6px rgba(226,99,123,0.5); }
+  .btn.danger-solid:hover{ filter:brightness(1.08); }
+  .btn:disabled{opacity:0.4; cursor:not-allowed;}
+
+  /* ---------- Filter row ---------- */
+  .filter-row{ display:flex; gap:8px; flex-wrap:wrap; margin-bottom:16px; }
+  .filter-row select, .filter-row input[type=text]{
+    padding:9px 12px; border:1px solid var(--line-strong); border-radius:9px;
+    font-family:'Inter',sans-serif; font-size:12.5px; background:var(--panel); color:var(--text); box-shadow: var(--shadow-panel);
+  }
+  .filter-row select:focus, .filter-row input:focus{ outline:none; border-color:var(--teal); }
+  .filter-row input[type=text]{min-width:180px; flex:1;}
+  .filter-row input::placeholder{ color:var(--text-faint); }
+
+  /* ---------- Panel / Table ---------- */
+  .panel{
+    background: linear-gradient(160deg, var(--panel-raised), var(--panel));
+    border:1px solid var(--line-strong); border-radius:var(--radius); overflow:hidden; box-shadow: var(--shadow-panel);
+  }
+  table{ width:100%; border-collapse:collapse; font-size:13px; }
+  thead th{
+    text-align:left; background:var(--table-head-bg); color:var(--teal); font-weight:700;
+    font-size:10.5px; text-transform:uppercase; letter-spacing:0.05em; padding:12px 14px; white-space:nowrap;
+    border-bottom:1px solid var(--line-strong);
+  }
+  tbody td{ padding:13px 14px; border-top:1px solid var(--line); vertical-align:top; color:var(--text); }
+  tbody tr:hover{background:var(--wash-1);}
+  .num{text-align:right; font-variant-numeric:tabular-nums; font-family:'Space Grotesk',sans-serif;}
+  .muted{color:var(--text-faint); font-size:11.5px;}
+  .empty-state{ padding:44px 20px; text-align:center; color:var(--text-dim); }
+  .empty-state .display{font-size:16px; color:var(--teal); margin-bottom:6px; font-weight:600;}
+  .table-scroll{overflow-x:auto;}
+
+  a.link-pill{ color:var(--teal); text-decoration:none; font-weight:600; font-size:12px; border-bottom:1px solid var(--teal-dim); }
+  a.link-pill:hover{color:#fff; border-color:var(--teal);}
+
+  .badge{
+    display:inline-block; padding:4px 10px; border-radius:999px; font-size:10.5px;
+    font-weight:700; letter-spacing:0.02em; white-space:nowrap; border:1px solid transparent;
+  }
+  .badge.status-booked{background:rgba(var(--teal-rgb),0.12); color:var(--teal); border-color:rgba(var(--teal-rgb),0.3);}
+  .badge.status-shortlisted{background:rgba(232,176,75,0.12); color:var(--amber); border-color:rgba(232,176,75,0.3);}
+  .badge.status-rejected{background:rgba(226,99,123,0.12); color:var(--rose); border-color:rgba(226,99,123,0.3);}
+  .badge.status-pending{background:var(--wash-3); color:var(--text-dim); border-color:var(--line-strong);}
+  .badge.rsvp-yes{background:rgba(var(--teal-rgb),0.12); color:var(--teal); border-color:rgba(var(--teal-rgb),0.3);}
+  .badge.rsvp-no{background:rgba(226,99,123,0.12); color:var(--rose); border-color:rgba(226,99,123,0.3);}
+  .badge.rsvp-pending{background:var(--wash-3); color:var(--text-dim); border-color:var(--line-strong);}
+  .badge.rsvp-maybe{background:rgba(232,176,75,0.12); color:var(--amber); border-color:rgba(232,176,75,0.3);}
+
+  .inline-status-select{
+    padding:5px 8px; border-radius:8px; font-size:11.5px; font-weight:700;
+    background:var(--wash-3); color:var(--text-dim); border:1px solid var(--line-strong);
+    cursor:pointer; font-family:'Inter',sans-serif; letter-spacing:0.02em;
+  }
+  .inline-status-select:hover{ border-color:rgba(var(--teal-rgb),0.4); }
+  .inline-status-select:focus{ outline:none; border-color:var(--teal); }
+  .inline-status-select option{ background:var(--panel); color:var(--text); }
+  .inline-status-select.rsvp-rsvp-yes{ background:rgba(var(--teal-rgb),0.12); color:var(--teal); border-color:rgba(var(--teal-rgb),0.3); }
+  .inline-status-select.rsvp-rsvp-no{ background:rgba(226,99,123,0.12); color:var(--rose); border-color:rgba(226,99,123,0.3); }
+  .inline-status-select.rsvp-rsvp-maybe{ background:rgba(232,176,75,0.12); color:var(--amber); border-color:rgba(232,176,75,0.3); }
+  .inline-status-select.rsvp-rsvp-pending{ background:var(--wash-3); color:var(--text-dim); }
+
+  .row-actions{display:flex; gap:4px;}
+  .icon-btn{
+    background:var(--wash-2); border:1px solid var(--line); cursor:pointer; color:var(--text-dim);
+    font-size:13px; padding:5px 8px; border-radius:7px; transition:all 0.12s;
+  }
+  .icon-btn:hover{background:rgba(var(--teal-rgb),0.12); color:var(--teal); border-color:rgba(var(--teal-rgb),0.3);}
+  .icon-btn.del:hover{background:rgba(226,99,123,0.12); color:var(--rose); border-color:rgba(226,99,123,0.3);}
+  .icon-btn.expanded{background:rgba(232,176,75,0.14); color:var(--amber); border-color:rgba(232,176,75,0.35);}
+
+  input[type=checkbox]{ width:17px; height:17px; accent-color:var(--teal); cursor:pointer; }
+
+  .extract-card{
+    display:flex; align-items:flex-start; gap:12px;
+    padding:12px; border-top:1px solid var(--line);
+  }
+  .extract-card:first-child{ border-top:none; }
+  .extract-card-top{ display:flex; flex-direction:column; align-items:center; gap:8px; padding-top:6px; flex-shrink:0; }
+  .extract-card-fields{ display:flex; flex-wrap:wrap; gap:8px; flex:1; min-width:0; }
+  .extract-field{ display:flex; flex-direction:column; gap:3px; flex:1; min-width:110px; }
+  .extract-field label{ font-size:10px; font-weight:700; color:var(--text-faint); text-transform:uppercase; letter-spacing:0.04em; }
+  .extract-field input{
+    padding:7px 9px; border:1px solid var(--line-strong); border-radius:7px; font-size:13px;
+    font-family:'Inter',sans-serif; background:var(--field-bg); color:var(--text); width:100%;
+  }
+  .extract-field input:focus{ outline:none; border-color:var(--teal); }
+  @media (max-width:520px){
+    .extract-card-fields{ flex-direction:column; }
+    .extract-field{ min-width:0; }
+  }
+
+  .format-option{
+    display:flex; align-items:center; gap:12px; padding:11px 14px;
+    background:var(--field-bg); border:1.5px solid var(--line-strong); border-radius:10px;
+    cursor:pointer; transition: border-color 0.12s, background 0.12s;
+  }
+  .format-option:hover{ border-color:rgba(var(--teal-rgb),0.4); }
+  .format-option.selected{ border-color:var(--teal); background:rgba(var(--teal-rgb),0.08); }
+  .format-option input[type=radio]{ accent-color:var(--teal); width:16px; height:16px; flex-shrink:0; }
+  .format-option-body{ min-width:0; }
+  .format-option-label{ font-size:13px; font-weight:600; color:var(--text); }
+  .format-option-example{ font-size:11px; color:var(--text-faint); font-family:'Space Grotesk',sans-serif; margin-top:2px; }
+
+  /* ---------- Modal ---------- */
+  .modal-overlay{
+    display:none; position:fixed; inset:0; background:rgba(4,7,14,0.7); backdrop-filter:blur(3px); z-index:50;
+    align-items:flex-start; justify-content:center; padding:40px 16px; overflow-y:auto;
+  }
+  .modal-overlay.active{display:flex;}
+  .modal{
+    background: linear-gradient(160deg, var(--panel-raised), var(--panel));
+    border:1px solid var(--line-strong); border-radius:18px; max-width:520px; width:100%;
+    padding:26px 26px 22px; box-shadow: 0 30px 70px -20px rgba(0,0,0,0.7), 0 1px 0 rgba(255,255,255,0.08) inset;
+  }
+  .modal h3{ margin:0 0 18px; font-size:18px; color:var(--heading); font-weight:600; }
+  .form-grid{ display:grid; grid-template-columns:1fr 1fr; gap:12px 14px; }
+  .form-grid .full{grid-column:1 / -1;}
+  .field label{
+    display:block; font-size:10.5px; font-weight:700; color:var(--text-faint);
+    text-transform:uppercase; letter-spacing:0.05em; margin-bottom:6px;
+  }
+  .field input, .field select, .field textarea{
+    width:100%; padding:10px 12px; border:1px solid var(--line-strong); border-radius:9px;
+    font-family:'Inter',sans-serif; font-size:13px; color:var(--text); background:var(--field-bg-strong);
+  }
+  .field input:focus, .field select:focus, .field textarea:focus{
+    outline:none; border-color:var(--teal); box-shadow:0 0 0 3px rgba(var(--teal-rgb),0.15);
+  }
+  .field textarea{resize:vertical; min-height:60px;}
+  .field input.invalid{ border-color:var(--rose); box-shadow:0 0 0 3px rgba(226,99,123,0.15); }
+  .field-error{ font-size:11px; color:var(--rose); margin-top:5px; line-height:1.4; }
+  .field input::placeholder, .field textarea::placeholder{ color:var(--text-faint); }
+  .modal-footer{ display:flex; justify-content:flex-end; gap:10px; margin-top:20px; }
+
+  /* ---------- Checklist ---------- */
+  .checklist-item{ display:flex; align-items:flex-start; gap:12px; padding:14px; border-top:1px solid var(--line); }
+  .checklist-item:first-child{border-top:none;}
+  .checklist-item.done .task-title{text-decoration:line-through; color:var(--text-faint);}
+  .task-title{font-weight:600; font-size:13px; color:var(--text);}
+  .task-meta{font-size:11px; color:var(--text-dim); margin-top:3px;}
+  .task-meta.overdue{color:var(--rose); font-weight:600;}
+  .task-body{flex:1;}
+
+  .activity-item{ display:flex; align-items:flex-start; gap:12px; padding:13px 14px; border-top:1px solid var(--line); }
+  .activity-item:first-child{border-top:none;}
+  .activity-dot{ width:9px; height:9px; border-radius:50%; margin-top:5px; flex-shrink:0; }
+  .activity-dot.act-add{ background:var(--teal); box-shadow:0 0 6px rgba(var(--teal-rgb),0.6); }
+  .activity-dot.act-edit{ background:var(--amber); box-shadow:0 0 6px rgba(232,176,75,0.5); }
+  .activity-dot.act-delete{ background:var(--rose); box-shadow:0 0 6px rgba(226,99,123,0.5); }
+  .activity-dot.act-batch{ background:var(--accent2); box-shadow:0 0 6px rgba(var(--accent2-rgb),0.5); }
+  .activity-body{ flex:1; min-width:0; }
+  .activity-message{ font-size:13px; color:var(--text); }
+  .activity-time{ font-size:11px; color:var(--text-faint); margin-top:2px; }
+
+  .spinner{
+    width:30px; height:30px; border-radius:50%; border:3px solid rgba(var(--teal-rgb),0.15);
+    border-top-color:var(--teal); animation:spin 0.8s linear infinite; margin:20px auto;
+  }
+  @keyframes spin{ to{ transform:rotate(360deg); } }
+
+  footer.note{ text-align:center; font-size:11.5px; color:var(--text-faint); padding:24px 0 0; }
+
+  ::-webkit-scrollbar{ height:8px; width:8px; }
+  ::-webkit-scrollbar-track{ background:transparent; }
+  ::-webkit-scrollbar-thumb{ background:var(--line-strong); border-radius:4px; }
+
+  @media (max-width:640px){
+    .form-grid{grid-template-columns:1fr;}
+    h1.display{font-size:24px;}
+    .container{padding:20px 14px 50px;}
+    .topbar{padding:20px 14px 0;}
+    .topbar-panel{padding:20px 18px 18px; border-radius:16px;}
+    .topbar-grid{grid-template-columns:1fr; text-align:left;}
+    .countdown-dial{ width:104px; height:104px; margin-top:6px; }
+    .countdown-num{font-size:20px;}
+    .tabs-wrap{padding:0 14px;}
+    .tab-btn{padding:10px 12px; font-size:11.5px;}
+  }
+
+  /* ---------- Print (guest list export) ---------- */
+  .print-only{ display:none; }
+  @media print{
+    body *{ visibility:hidden; }
+    #printGuestList, #printGuestList *{ visibility:visible; }
+    #printGuestList{
+      display:block; position:absolute; top:0; left:0; width:100%;
+      background:#fff; color:#111; padding:0; margin:0;
+    }
+    #printGuestList h1{ font-family:Georgia,serif; font-size:22px; margin:0 0 2px; color:#111; }
+    #printGuestList .print-sub{ font-size:12px; color:#555; margin-bottom:14px; }
+    #printGuestList table{ width:100%; border-collapse:collapse; font-size:11px; }
+    #printGuestList th, #printGuestList td{ border:1px solid #999; padding:6px 8px; text-align:left; color:#111; }
+    #printGuestList th{ background:#eee; font-weight:700; }
+    #printGuestList .print-summary{ font-size:12px; margin-bottom:10px; color:#333; }
+    @page{ margin:16mm; }
+  }
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/libphonenumber-js/1.13.5/libphonenumber-js.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-panel">
+    <button class="sync-toggle" id="syncNowBtn" title="Download a backup of your data" aria-label="Sync now">
+      <svg viewBox="0 0 20 20" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M4 10a6 6 0 0 1 10.5-3.9M16 10a6 6 0 0 1-10.5 3.9"/>
+        <path d="M14.5 3.5v3h-3M5.5 16.5v-3h3"/>
+      </svg>
+    </button>
+    <span class="sync-status" id="syncStatus"></span>
+    <button class="theme-toggle" id="themeToggleBtn" title="Change theme colors" aria-label="Change theme colors">
+      <svg viewBox="0 0 20 20" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M10 2a8 8 0 1 0 0 16c1.1 0 1.6-.7 1.6-1.5 0-.4-.15-.75-.4-1-.25-.28-.4-.6-.4-1 0-.8.65-1.5 1.5-1.5H14a4 4 0 0 0 4-4c0-4.4-3.6-7-8-7Z"/>
+        <circle cx="6.5" cy="9.5" r="0.9" fill="currentColor" stroke="none"/>
+        <circle cx="9.5" cy="6" r="0.9" fill="currentColor" stroke="none"/>
+        <circle cx="13.5" cy="7.5" r="0.9" fill="currentColor" stroke="none"/>
+      </svg>
+    </button>
+    <div class="theme-popover" id="themePopover">
+      <div class="theme-popover-title">Accent color</div>
+      <div class="swatch-grid" id="swatchGrid"></div>
+      <div class="theme-popover-title" style="margin-top:14px;">Panel color</div>
+      <div class="swatch-grid" id="panelSwatchGrid"></div>
+    </div>
+    <svg class="corner-floral corner-floral-tl" viewBox="0 0 140 140" aria-hidden="true">
+      <g fill="none" stroke="#8C5227" stroke-width="1.8" stroke-linecap="round" opacity="0.85">
+        <path d="M2 46 Q 8 16, 36 8 Q 60 1, 78 16"/>
+        <path d="M2 46 Q 22 34, 24 10"/>
+        <path d="M14 52 Q 34 44, 38 20"/>
+        <path d="M2 68 Q 16 62, 22 48"/>
+        <path d="M8 78 Q 20 72, 24 58"/>
+      </g>
+      <g transform="translate(28,22)" opacity="1">
+        <circle r="13" fill="#F3B8AE" stroke="#C2455E" stroke-width="1.4"/>
+        <path d="M-8 -3 Q 0 -12 8 -3 Q 4 3 0 0 Q -4 3 -8 -3 Z" fill="#E88A9A" stroke="#C2455E" stroke-width="1"/>
+        <path d="M-7 5 Q 0 10 7 5 Q 4 -1 0 1 Q -4 -1 -7 5 Z" fill="#EDA3AC" stroke="#C2455E" stroke-width="1"/>
+        <circle r="4" fill="#D96C7C" stroke="#C2455E" stroke-width="0.9"/>
+      </g>
+      <g transform="translate(58,10) scale(0.72)" opacity="0.92">
+        <circle r="13" fill="#F3B8AE" stroke="#C2455E" stroke-width="1.4"/>
+        <path d="M-8 -3 Q 0 -12 8 -3 Q 4 3 0 0 Q -4 3 -8 -3 Z" fill="#E88A9A" stroke="#C2455E" stroke-width="1"/>
+        <circle r="4" fill="#D96C7C" stroke="#C2455E" stroke-width="0.9"/>
+      </g>
+      <g transform="translate(14,66) scale(0.55)" opacity="0.8">
+        <circle r="13" fill="#F3B8AE" stroke="#C2455E" stroke-width="1.4"/>
+        <path d="M-8 -3 Q 0 -12 8 -3 Q 4 3 0 0 Q -4 3 -8 -3 Z" fill="#E88A9A" stroke="#C2455E" stroke-width="1"/>
+        <circle r="4" fill="#D96C7C" stroke="#C2455E" stroke-width="0.9"/>
+      </g>
+      <g fill="#7A9962" opacity="0.8">
+        <ellipse cx="8" cy="58" rx="5" ry="13" transform="rotate(30 8 58)"/>
+        <ellipse cx="20" cy="66" rx="4.5" ry="11" transform="rotate(60 20 66)"/>
+        <ellipse cx="48" cy="6" rx="4.5" ry="11" transform="rotate(-40 48 6)"/>
+        <ellipse cx="4" cy="80" rx="4" ry="10" transform="rotate(15 4 80)"/>
+      </g>
+    </svg>
+    <svg class="corner-floral corner-floral-br" viewBox="0 0 140 140" aria-hidden="true">
+      <g fill="none" stroke="#8C5227" stroke-width="1.8" stroke-linecap="round" opacity="0.8">
+        <path d="M138 96 Q 132 124, 104 133 Q 80 140, 62 126"/>
+        <path d="M138 96 Q 118 108, 116 130"/>
+        <path d="M126 88 Q 108 96, 104 120"/>
+        <path d="M138 76 Q 128 86, 128 98"/>
+        <path d="M118 138 Q 108 128, 108 112"/>
+      </g>
+      <g transform="translate(114,122)" opacity="0.95">
+        <circle r="12" fill="#F3B8AE" stroke="#C2455E" stroke-width="1.4"/>
+        <path d="M-7 -3 Q 0 -11 7 -3 Q 4 3 0 0 Q -4 3 -7 -3 Z" fill="#E88A9A" stroke="#C2455E" stroke-width="1"/>
+        <circle r="3.8" fill="#D96C7C" stroke="#C2455E" stroke-width="0.9"/>
+      </g>
+      <g transform="translate(132,82) scale(0.65)" opacity="0.82">
+        <circle r="12" fill="#F3B8AE" stroke="#C2455E" stroke-width="1.4"/>
+        <path d="M-7 -3 Q 0 -11 7 -3 Q 4 3 0 0 Q -4 3 -7 -3 Z" fill="#E88A9A" stroke="#C2455E" stroke-width="1"/>
+        <circle r="3.8" fill="#D96C7C" stroke="#C2455E" stroke-width="0.9"/>
+      </g>
+      <g transform="translate(78,136) scale(0.5)" opacity="0.7">
+        <circle r="12" fill="#F3B8AE" stroke="#C2455E" stroke-width="1.4"/>
+        <path d="M-7 -3 Q 0 -11 7 -3 Q 4 3 0 0 Q -4 3 -7 -3 Z" fill="#E88A9A" stroke="#C2455E" stroke-width="1"/>
+        <circle r="3.8" fill="#D96C7C" stroke="#C2455E" stroke-width="0.9"/>
+      </g>
+      <g fill="#7A9962" opacity="0.78">
+        <ellipse cx="132" cy="108" rx="4.5" ry="12" transform="rotate(-30 132 108)"/>
+        <ellipse cx="94" cy="132" rx="4.5" ry="12" transform="rotate(50 94 132)"/>
+        <ellipse cx="124" cy="96" rx="4" ry="10" transform="rotate(-10 124 96)"/>
+      </g>
+    </svg>
+    <div class="topbar-grid">
+      <div>
+        <div class="eyebrow">Two families, one celebration</div>
+        <h1 class="display">Our Wedding Planner</h1>
+        <div class="subtitle">Track spending, compare vendors, and manage your guest list — all in one place.</div>
+        <div class="date-edit">
+          <div class="field-wrap">
+            <label for="weddingDate">Date</label>
+            <input type="date" id="weddingDate">
+          </div>
+          <div class="field-wrap">
+            <label for="totalBudget">Budget ₹</label>
+            <input type="number" id="totalBudget" placeholder="2500000">
+          </div>
+        </div>
+      </div>
+      <div class="countdown-dial">
+        <svg viewBox="0 0 120 120">
+          <defs>
+            <linearGradient id="dialGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" style="stop-color:var(--teal)"/>
+              <stop offset="100%" style="stop-color:var(--accent2)"/>
+            </linearGradient>
+          </defs>
+          <circle class="track" cx="60" cy="60" r="52"></circle>
+          <circle class="fill" id="countdownRing" cx="60" cy="60" r="52" stroke-dasharray="327" stroke-dashoffset="327"></circle>
+        </svg>
+        <div class="countdown-center">
+          <div class="countdown-num" id="countdownNum">—</div>
+          <div class="countdown-label" id="countdownLabel">Set your wedding date</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="tabs-wrap">
+  <div class="tabs" id="tabs">
+    <button class="tab-btn active" data-view="overview">Overview</button>
+    <button class="tab-btn" data-view="expenses">Expenditure</button>
+    <button class="tab-btn" data-view="vendors">Vendors &amp; Ideas</button>
+    <button class="tab-btn" data-view="guests">Guest List</button>
+    <button class="tab-btn" data-view="checklist">Checklist</button>
+    <button class="tab-btn" data-view="activity">Activity</button>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- OVERVIEW -->
+  <div class="view active" id="view-overview">
+    <div class="gauge-grid" id="statGrid"></div>
+    <div class="section-head"><h2 class="display">Spend by event</h2></div>
+    <div class="panel" style="padding:18px 20px;" id="spendByEvent"></div>
+    <div class="section-head" style="margin-top:24px;"><h2 class="display">Spend by category</h2></div>
+    <div class="panel" style="padding:18px 20px;" id="spendByCategory"></div>
+    <div class="section-head" style="margin-top:24px;"><h2 class="display">Coming up</h2></div>
+    <div class="panel" id="upcomingTasks"></div>
+  </div>
+
+  <!-- EXPENDITURE -->
+  <div class="view" id="view-expenses">
+    <div class="section-head">
+      <h2 class="display">Expenditure Tracker</h2>
+      <div class="head-actions">
+        <button class="btn" data-open-modal="expenseModal" data-mode="add">+ Add expense</button>
+        <button class="btn ghost danger-ghost" id="clearExpensesBtn">Clear all</button>
+      </div>
+    </div>
+    <div class="filter-row">
+      <select id="expEventFilter"><option value="">All events</option></select>
+      <input type="text" id="expSearch" placeholder="Search vendor, notes...">
+    </div>
+    <div class="panel table-scroll">
+      <table>
+        <thead>
+          <tr>
+            <th>Event</th><th>Category</th><th>Item / Vendor</th><th>Contact</th>
+            <th class="num">Total (₹)</th><th class="num">Advance paid (₹)</th><th class="num">Balance (₹)</th>
+            <th>Notes</th><th></th>
+          </tr>
+        </thead>
+        <tbody id="expenseTableBody"></tbody>
+      </table>
+      <div class="empty-state" id="expenseEmpty" style="display:none;">
+        <div class="display">No expenses yet</div>
+        <div>Add your first payment to start tracking the budget.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- VENDORS -->
+  <div class="view" id="view-vendors">
+    <div class="section-head">
+      <h2 class="display">Vendors &amp; Ideas</h2>
+      <div class="head-actions">
+        <button class="btn" data-open-modal="vendorModal" data-mode="add">+ Add option</button>
+        <button class="btn secondary" id="compareVendorsBtn">Compare selected</button>
+        <button class="btn ghost danger-ghost" id="clearVendorsBtn">Clear all</button>
+      </div>
+    </div>
+    <div class="filter-row">
+      <select id="venCategoryFilter"><option value="">All categories</option></select>
+      <select id="venStatusFilter">
+        <option value="">All statuses</option>
+        <option value="Shortlisted">Shortlisted</option>
+        <option value="Booked">Booked</option>
+        <option value="Rejected">Rejected</option>
+        <option value="Pending">Pending review</option>
+      </select>
+      <input type="text" id="venSearch" placeholder="Search name, notes...">
+    </div>
+    <div class="panel table-scroll">
+      <table>
+        <thead>
+          <tr>
+            <th></th><th>Category</th><th>Name</th><th>Contact</th><th>Price est. (₹)</th>
+            <th>Link</th><th>Status</th><th>Notes</th><th></th>
+          </tr>
+        </thead>
+        <tbody id="vendorTableBody"></tbody>
+      </table>
+      <div class="empty-state" id="vendorEmpty" style="display:none;">
+        <div class="display">No options saved yet</div>
+        <div>Add venues, decorators, caterers, photographers — anything you're comparing.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- GUESTS -->
+  <div class="view" id="view-guests">
+    <div class="section-head">
+      <h2 class="display">Guest List</h2>
+      <div class="head-actions">
+        <button class="btn secondary" id="pasteGuestListBtn">📋 Paste list</button>
+        <button class="btn secondary" id="printGuestsBtn">🖨️ Print</button>
+        <button class="btn secondary" id="exportGuestsPdfBtn">⬇ Export PDF</button>
+        <button class="btn" data-open-modal="guestModal" data-mode="add">+ Add guest</button>
+        <button class="btn ghost danger-ghost" id="clearGuestsBtn">Clear all</button>
+      </div>
+    </div>
+    <div class="stat-grid guest-stat-grid" id="guestStatGrid" style="margin-bottom:16px;"></div>
+    <div class="filter-row">
+      <select id="guestSideFilter">
+        <option value="">Both sides</option>
+        <option value="Bride">Bride's side</option>
+        <option value="Groom">Groom's side</option>
+      </select>
+      <select id="guestRsvpFilter">
+        <option value="">All RSVP</option>
+        <option value="Yes">Confirmed</option>
+        <option value="No">Declined</option>
+        <option value="Maybe">Maybe</option>
+        <option value="Pending">Pending</option>
+      </select>
+      <input type="text" id="guestSearch" placeholder="Search name, city...">
+    </div>
+    <div class="panel table-scroll">
+      <table>
+        <thead>
+          <tr>
+            <th>Name</th><th>Side</th><th>Contact</th><th>City</th>
+            <th class="num">Guests</th><th>Invite sent</th><th>RSVP</th><th>Notes</th><th></th>
+          </tr>
+        </thead>
+        <tbody id="guestTableBody"></tbody>
+      </table>
+      <div class="empty-state" id="guestEmpty" style="display:none;">
+        <div class="display">Guest list is empty</div>
+        <div>Start adding family and friends to track invites and RSVPs.</div>
+      </div>
+    </div>
+  </div>
+
+  <div id="printGuestList" class="print-only"></div>
+
+  <!-- CHECKLIST -->
+  <div class="view" id="view-checklist">
+    <div class="section-head">
+      <h2 class="display">Checklist &amp; Timeline</h2>
+      <div class="head-actions">
+        <button class="btn" data-open-modal="taskModal" data-mode="add">+ Add task</button>
+        <button class="btn ghost danger-ghost" id="clearTasksBtn">Clear all</button>
+      </div>
+    </div>
+    <div class="filter-row">
+      <select id="taskFilter">
+        <option value="pending">Pending</option>
+        <option value="all">All tasks</option>
+        <option value="done">Completed</option>
+      </select>
+    </div>
+    <div class="panel" id="taskList"></div>
+    <div class="empty-state" id="taskEmpty" style="display:none;">
+      <div class="display">Nothing here</div>
+      <div>Add tasks like "Finalize caterer" or "Send invites" with due dates.</div>
+    </div>
+  </div>
+
+  <!-- ACTIVITY -->
+  <div class="view" id="view-activity">
+    <div class="section-head">
+      <h2 class="display">Activity</h2>
+      <div class="head-actions">
+        <button class="btn ghost danger-ghost" id="clearActivityBtn">Clear log</button>
+      </div>
+    </div>
+    <div class="panel" id="activityList"></div>
+    <div class="empty-state" id="activityEmpty" style="display:none;">
+      <div class="display">No activity yet</div>
+      <div>Every guest, expense, vendor, and task change you make will show up here.</div>
+    </div>
+  </div>
+
+</div>
+
+<footer class="note">Saved automatically in this browser · Export your data anytime as backup</footer>
+<div style="text-align:center; padding-bottom:30px;">
+  <button class="btn ghost" id="exportBtn">Export backup (JSON)</button>
+  <button class="btn ghost" id="importBtn">Import backup</button>
+  <input type="file" id="importFile" accept=".json" style="display:none;">
+</div>
+
+<!-- ===== MODALS ===== -->
+
+<div class="modal-overlay" id="expenseModal">
+  <div class="modal">
+    <h3 id="expenseModalTitle">Add expense</h3>
+    <div class="form-grid">
+      <div class="field full">
+        <label>Event</label>
+        <select id="f-exp-event-select"></select>
+        <input type="text" id="f-exp-event" placeholder="Type your own event" style="display:none; margin-top:8px;">
+      </div>
+      <div class="field full"><label>Item / Vendor name</label><input type="text" id="f-exp-item" placeholder="e.g. Catering - ABC Caterers"></div>
+      <div class="field full">
+        <label>Category</label>
+        <select id="f-exp-category-select"></select>
+        <input type="text" id="f-exp-category" placeholder="Type your own category" style="display:none; margin-top:8px;">
+      </div>
+      <div class="field"><label>Contact number</label><input type="text" id="f-exp-contact" placeholder="+91 ..."></div>
+      <div class="field"><label>Total amount (₹)</label><input type="number" id="f-exp-total" placeholder="0"></div>
+      <div class="field"><label>Advance paid (₹)</label><input type="number" id="f-exp-advance" placeholder="0"></div>
+      <div class="field"><label>Payment date</label><input type="date" id="f-exp-date"></div>
+      <div class="field full"><label>Notes</label><textarea id="f-exp-notes" placeholder="Payment terms, what's included, due dates..."></textarea></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn secondary" data-close-modal="expenseModal">Cancel</button>
+      <button class="btn" id="saveExpenseBtn">Save</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="vendorModal">
+  <div class="modal">
+    <h3 id="vendorModalTitle">Add vendor / option</h3>
+    <div class="form-grid">
+      <div class="field">
+        <label>Category</label>
+        <select id="f-ven-category-select"></select>
+        <input type="text" id="f-ven-category" placeholder="Type your own category" style="display:none; margin-top:8px;">
+      </div>
+      <div class="field"><label>Name</label><input type="text" id="f-ven-name" placeholder="Business / person name"></div>
+      <div class="field"><label>Contact number</label><input type="text" id="f-ven-contact" placeholder="+91 ..."></div>
+      <div class="field"><label>Price estimate (₹)</label><input type="number" id="f-ven-price" placeholder="0"></div>
+      <div class="field full"><label>Website / Instagram link</label><input type="text" id="f-ven-link" placeholder="https://..."></div>
+      <div class="field">
+        <label>Status</label>
+        <select id="f-ven-status">
+          <option>Pending</option><option>Shortlisted</option><option>Booked</option><option>Rejected</option>
+        </select>
+      </div>
+      <div class="field"><label>Location</label><input type="text" id="f-ven-location" placeholder="Area / city"></div>
+      <div class="field full"><label>Notes</label><textarea id="f-ven-notes" placeholder="What you liked, packages offered, availability..."></textarea></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn secondary" data-close-modal="vendorModal">Cancel</button>
+      <button class="btn" id="saveVendorBtn">Save</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="compareModal">
+  <div class="modal" style="max-width:900px;">
+    <h3>Compare vendors</h3>
+    <div id="compareTableWrap" class="table-scroll"></div>
+    <div class="modal-footer">
+      <button class="btn secondary" data-close-modal="compareModal">Close</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="guestModal">
+  <div class="modal">
+    <h3 id="guestModalTitle">Add guest</h3>
+    <div class="form-grid">
+      <div class="field full"><label>Name</label><input type="text" id="f-guest-name" placeholder="Full name / family name"></div>
+      <div class="field">
+        <label>Side</label>
+        <select id="f-guest-side"><option>Bride</option><option>Groom</option></select>
+      </div>
+      <div class="field full">
+        <label>Contact number</label>
+        <div style="display:flex; gap:8px;">
+          <select id="f-guest-contact-country" style="width:110px; flex-shrink:0;"></select>
+          <input type="text" id="f-guest-contact" placeholder="98765 43210" inputmode="tel" style="flex:1;">
+        </div>
+        <div class="field-error" id="f-guest-contact-error" style="display:none;"></div>
+      </div>
+      <div class="field"><label>City</label><input type="text" id="f-guest-city" placeholder=""></div>
+      <div class="field"><label>Number of guests</label><input type="number" id="f-guest-count" placeholder="1" min="1"></div>
+      <div class="field">
+        <label>Invite sent</label>
+        <select id="f-guest-invite"><option>No</option><option>Yes</option></select>
+      </div>
+      <div class="field">
+        <label>RSVP status</label>
+        <select id="f-guest-rsvp"><option>Pending</option><option>Yes</option><option>No</option><option>Maybe</option></select>
+      </div>
+      <div class="field full"><label>Notes</label><textarea id="f-guest-notes" placeholder="Dietary needs, accommodation, events attending..."></textarea></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn secondary" data-close-modal="guestModal">Cancel</button>
+      <button class="btn" id="saveGuestBtn">Save</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="taskModal">
+  <div class="modal">
+    <h3 id="taskModalTitle">Add task</h3>
+    <div class="form-grid">
+      <div class="field full"><label>Task</label><input type="text" id="f-task-title" placeholder="e.g. Finalize wedding lehenga"></div>
+      <div class="field"><label>Due date</label><input type="date" id="f-task-due"></div>
+      <div class="field"><label>Related to</label><input type="text" id="f-task-category" placeholder="e.g. Outfits, Venue"></div>
+      <div class="field full"><label>Notes</label><textarea id="f-task-notes" placeholder=""></textarea></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn secondary" data-close-modal="taskModal">Cancel</button>
+      <button class="btn" id="saveTaskBtn">Save</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="pasteModal">
+  <div class="modal" style="max-width:560px;">
+    <h3>Paste guest list</h3>
+    <div class="muted" style="font-size:12.5px; margin-bottom:12px; line-height:1.55;">
+      Paste one guest per line — no header needed. If a line only has a name, that guest is added as 1 person by default.
+    </div>
+
+    <div id="formatCurrent" style="display:flex; align-items:center; justify-content:space-between; gap:10px; background:var(--field-bg); border:1.5px solid var(--line-strong); border-radius:10px; padding:11px 14px; margin-bottom:6px;">
+      <div>
+        <div class="format-option-label" id="formatCurrentLabel">Name, Guest count, Mobile</div>
+        <div class="format-option-example" id="formatCurrentExample">e.g. Amit, 2, 9876543210</div>
+      </div>
+      <button class="btn ghost" id="changeFormatBtn" type="button">Change format</button>
+    </div>
+    <div id="formatPicker" style="display:none; grid; gap:8px; margin:6px 0 14px;"></div>
+    <div id="customFormatBuilder" style="display:none; margin:6px 0 14px;">
+      <div class="muted" style="font-size:11.5px; margin-bottom:8px;">How many columns does your list have, and what does each one mean, in order?</div>
+      <div style="display:flex; align-items:center; gap:8px; margin-bottom:10px;">
+        <span class="muted" style="font-size:11.5px;">Columns:</span>
+        <select id="customColCount" style="padding:6px 10px; border:1px solid var(--line-strong); border-radius:8px; background:var(--panel); color:var(--text); font-size:12.5px;">
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+        </select>
+      </div>
+      <div id="customColSlots" style="display:flex; flex-direction:column; gap:8px;"></div>
+    </div>
+
+    <div class="muted" style="font-size:11.5px; margin:10px 0 6px;">Separate values with commas, tabs, or spaces.</div>
+    <textarea id="pasteTextarea" placeholder="" style="width:100%; min-height:150px; padding:10px 12px; border:1px solid var(--line-strong); border-radius:9px; font-family:'Inter',sans-serif; font-size:13px; color:var(--text); background:var(--field-bg-strong); resize:vertical;"></textarea>
+    <div class="modal-footer">
+      <button class="btn secondary" data-close-modal="pasteModal">Cancel</button>
+      <button class="btn" id="parsePasteBtn">Preview</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="sideModal">
+  <div class="modal" style="max-width:400px;">
+    <h3>Which side are these guests on?</h3>
+    <div class="muted" style="font-size:13px; margin-bottom:16px;">This applies to every guest in this batch. You can still edit individual guests afterward.</div>
+    <div class="modal-footer" style="justify-content:center; gap:14px;">
+      <button class="btn secondary" id="sidePickBride" style="min-width:120px;">Bride's side</button>
+      <button class="btn secondary" id="sidePickGroom" style="min-width:120px;">Groom's side</button>
+    </div>
+    <div style="text-align:center; margin-top:12px;">
+      <button class="btn ghost" data-close-modal="sideModal">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="extractModal">
+  <div class="modal" style="max-width:820px;">
+    <h3 id="extractModalTitle">Review extracted guests</h3>
+    <div id="extractStatus" class="muted" style="margin-bottom:12px;"></div>
+    <div id="extractTableWrap" style="max-height:400px; overflow-y:auto; overflow-x:auto;"></div>
+    <div class="modal-footer">
+      <button class="btn secondary" data-close-modal="extractModal">Cancel</button>
+      <button class="btn" id="extractAddBtn" style="display:none;">Add selected to guest list</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="confirmModal">
+  <div class="modal" style="max-width:400px;">
+    <h3 id="confirmModalTitle">Are you sure?</h3>
+    <div id="confirmModalMessage" class="muted" style="font-size:13px; line-height:1.55;"></div>
+    <div class="modal-footer">
+      <button class="btn secondary" id="confirmModalCancel">Cancel</button>
+      <button class="btn danger-solid" id="confirmModalOk">Confirm</button>
+    </div>
+  </div>
+</div>
+
+<script>
+
+/* =========================================================================
+   STORAGE
+   ========================================================================= */
+const STORE_KEY = 'weddingPlannerData_v1';
+function loadData(){
+  try{
+    const raw = localStorage.getItem(STORE_KEY);
+    if(raw) return JSON.parse(raw);
+  }catch(e){}
+  return { weddingDate:'', totalBudget:'', theme:'teal', panelTheme:'navy', expenses:[], vendors:[], guests:[], tasks:[], activity:[] };
+}
+let data = loadData();
+
+function uid(){ return Math.random().toString(36).slice(2,10) + Date.now().toString(36); }
+
+// Safety net: backfill missing/duplicate ids on load (handles data saved by
+// any earlier version of this file), so every record can always be found.
+(function ensureIds(){
+  let changed = false;
+  if(!Array.isArray(data.activity)){ data.activity = []; changed = true; }
+  const seen = new Set();
+  ['expenses','vendors','guests','tasks'].forEach(key=>{
+    (data[key]||[]).forEach(item=>{
+      if(!item.id || seen.has(item.id)){ item.id = uid(); changed = true; }
+      seen.add(item.id);
+    });
+  });
+  if(changed) save();
+})();
+
+function save(){ localStorage.setItem(STORE_KEY, JSON.stringify(data)); }
+
+// Records one line in the Activity feed. Called from every add/edit/
+// delete/clear action across expenses, vendors, guests, and tasks.
+// Capped so the log can't grow without bound in localStorage.
+const ACTIVITY_MAX = 200;
+function logActivity(type, message){
+  if(!Array.isArray(data.activity)) data.activity = [];
+  data.activity.unshift({ id: uid(), type, message, at: new Date().toISOString() });
+  if(data.activity.length > ACTIVITY_MAX) data.activity.length = ACTIVITY_MAX;
+  save();
+  const list = document.getElementById('activityList');
+  if(list) renderActivity();
+}
+
+function fmtMoney(n){ n = Number(n)||0; return '₹' + n.toLocaleString('en-IN'); }
+
+// Builds a gauge-style stat card: a circular progress ring (SVG) beside a
+// label/value/sub-line. Used throughout the Overview tab.
+function gaugeCard(label, value, sub, pct, color, extraClass){
+  pct = Math.max(0, Math.min(100, pct || 0));
+  const r = 24, circ = 2 * Math.PI * r;
+  const offset = circ * (1 - pct/100);
+  return `<div class="gauge-card ${extraClass||''}">
+    <div class="gauge-ring">
+      <svg viewBox="0 0 58 58">
+        <circle class="track" cx="29" cy="29" r="${r}"></circle>
+        <circle class="fill" cx="29" cy="29" r="${r}" stroke="${color}" stroke-dasharray="${circ}" stroke-dashoffset="${offset}"></circle>
+      </svg>
+    </div>
+    <div class="gauge-body">
+      <div class="gauge-label">${label}</div>
+      <div class="gauge-value">${value}</div>
+      <div class="gauge-sub">${sub}</div>
+    </div>
+  </div>`;
+}
+function esc(s){ const d = document.createElement('div'); d.textContent = s ?? ''; return d.innerHTML; }
+function normalizeLink(url){
+  if(!url) return '';
+  url = url.trim();
+  if(!url) return '';
+  if(!/^https?:\/\//i.test(url)) url = 'https://' + url;
+  return url;
+}
+// Find a record's position in its master array by identity — every
+// edit/delete/clear-field action in this app targets a record this way,
+// never by trusting an id to have been saved correctly.
+function indexOf(list, item){ return list.indexOf(item); }
+
+/* =========================================================================
+   IN-PAGE CONFIRM DIALOG (used by every delete/clear action, every section)
+   ========================================================================= */
+let _confirmCallback = null;
+function openModal(id){ document.getElementById(id).classList.add('active'); }
+function closeModal(id){ document.getElementById(id).classList.remove('active'); }
+function showConfirm(message, onConfirm, title){
+  document.getElementById('confirmModalTitle').textContent = title || 'Are you sure?';
+  document.getElementById('confirmModalMessage').textContent = message;
+  _confirmCallback = onConfirm;
+  openModal('confirmModal');
+}
+document.getElementById('confirmModalOk').addEventListener('click', ()=>{
+  const cb = _confirmCallback; _confirmCallback = null;
+  closeModal('confirmModal');
+  if(cb) cb();
+});
+document.getElementById('confirmModalCancel').addEventListener('click', ()=>{
+  _confirmCallback = null; closeModal('confirmModal');
+});
+document.querySelectorAll('.modal-overlay').forEach(ov=>{
+  ov.addEventListener('click', (e)=>{ if(e.target === ov) closeModal(ov.id); });
+});
+document.querySelectorAll('[data-close-modal]').forEach(btn=>{
+  btn.addEventListener('click', ()=> closeModal(btn.dataset.closeModal));
+});
+document.querySelectorAll('[data-open-modal]').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    const modalId = btn.dataset.openModal;
+    if(modalId === 'expenseModal') openExpenseModal();
+    else if(modalId === 'vendorModal') openVendorModal();
+    else if(modalId === 'guestModal') openGuestModal();
+    else if(modalId === 'taskModal') openTaskModal();
+  });
+});
+
+/* =========================================================================
+   TABS
+   ========================================================================= */
+document.getElementById('tabs').addEventListener('click', (e)=>{
+  const btn = e.target.closest('.tab-btn');
+  if(!btn) return;
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.getElementById('view-' + btn.dataset.view).classList.add('active');
+});
+
+/* =========================================================================
+   HEADER: wedding date + budget
+   ========================================================================= */
+const weddingDateInput = document.getElementById('weddingDate');
+const totalBudgetInput = document.getElementById('totalBudget');
+weddingDateInput.value = data.weddingDate || '';
+totalBudgetInput.value = data.totalBudget || '';
+weddingDateInput.addEventListener('change', ()=>{ data.weddingDate = weddingDateInput.value; save(); renderCountdown(); renderOverview(); });
+totalBudgetInput.addEventListener('input', ()=>{ data.totalBudget = totalBudgetInput.value; save(); renderOverview(); });
+
+function renderCountdown(){
+  const numEl = document.getElementById('countdownNum');
+  const labelEl = document.getElementById('countdownLabel');
+  const ring = document.getElementById('countdownRing');
+  const CIRC = 2 * Math.PI * 52; // r=52
+
+  if(!data.weddingDate){
+    numEl.textContent = '—';
+    labelEl.textContent = 'Set your wedding date';
+    ring.setAttribute('stroke-dasharray', CIRC);
+    ring.setAttribute('stroke-dashoffset', CIRC);
+    return;
+  }
+  const today = new Date(); today.setHours(0,0,0,0);
+  const wd = new Date(data.weddingDate + 'T00:00:00');
+  const diff = Math.round((wd - today)/(1000*60*60*24));
+
+  ring.setAttribute('stroke-dasharray', CIRC);
+  if(diff > 1){
+    numEl.textContent = diff;
+    labelEl.textContent = 'days to go';
+    // Fill ring proportionally within a 1-year horizon, so it visibly
+    // fills up as the date approaches (capped so far-off dates still show a sliver).
+    const pct = Math.max(0.03, Math.min(1, 1 - (diff / 365)));
+    ring.setAttribute('stroke-dashoffset', CIRC * (1 - pct));
+  } else if(diff === 1){
+    numEl.textContent = '1';
+    labelEl.textContent = 'day to go — tomorrow!';
+    ring.setAttribute('stroke-dashoffset', CIRC * 0.02);
+  } else if(diff === 0){
+    numEl.textContent = '🎉';
+    labelEl.textContent = "today's the day!";
+    ring.setAttribute('stroke-dashoffset', 0);
+  } else {
+    numEl.textContent = Math.abs(diff);
+    labelEl.textContent = 'days since — celebrated!';
+    ring.setAttribute('stroke-dashoffset', 0);
+  }
+}
+
+/* =========================================================================
+   EXPENDITURE
+   ========================================================================= */
+let editingExpense = null;
+function openExpenseModal(item){
+  editingExpense = item || null;
+  document.getElementById('expenseModalTitle').textContent = item ? 'Edit expense' : 'Add expense';
+  document.getElementById('f-exp-item').value = item?.item || '';
+  document.getElementById('f-exp-contact').value = item?.contact || '';
+  document.getElementById('f-exp-total').value = item?.total ?? '';
+  document.getElementById('f-exp-advance').value = item?.advance ?? '';
+  document.getElementById('f-exp-date').value = item?.date || '';
+  document.getElementById('f-exp-notes').value = item?.notes || '';
+
+  const evts = [...new Set([...DEFAULT_EVENTS, ...data.expenses.map(e=>e.event)])].filter(Boolean);
+  const evtSelect = document.getElementById('f-exp-event-select');
+  const evtInput = document.getElementById('f-exp-event');
+  evtSelect.innerHTML = evts.map(ev=>`<option value="${esc(ev)}">${esc(ev)}</option>`).join('')
+    + `<option value="__custom__">Other (type your own)…</option>`;
+
+  const currentEvent = item?.event || '';
+  if(currentEvent && !evts.includes(currentEvent)){
+    evtSelect.value = '__custom__';
+    evtInput.value = currentEvent;
+    evtInput.style.display = 'block';
+  } else {
+    evtSelect.value = currentEvent || evts[0] || '__custom__';
+    evtInput.value = '';
+    evtInput.style.display = 'none';
+  }
+
+  const cats = [...new Set([...DEFAULT_CATEGORIES, ...data.vendors.map(v=>v.category), ...data.expenses.map(e=>e.category)])].filter(Boolean).sort();
+  const catSelect = document.getElementById('f-exp-category-select');
+  const catInput = document.getElementById('f-exp-category');
+  catSelect.innerHTML = cats.map(c=>`<option value="${esc(c)}">${esc(c)}</option>`).join('')
+    + `<option value="__custom__">Other (type your own)…</option>`;
+
+  const currentCategory = item?.category || '';
+  if(currentCategory && !cats.includes(currentCategory)){
+    catSelect.value = '__custom__';
+    catInput.value = currentCategory;
+    catInput.style.display = 'block';
+  } else {
+    catSelect.value = currentCategory || cats[0] || '__custom__';
+    catInput.value = '';
+    catInput.style.display = 'none';
+  }
+  openModal('expenseModal');
+}
+document.getElementById('f-exp-event-select').addEventListener('change', (e)=>{
+  const evtInput = document.getElementById('f-exp-event');
+  if(e.target.value === '__custom__'){
+    evtInput.style.display = 'block';
+    evtInput.focus();
+  } else {
+    evtInput.style.display = 'none';
+    evtInput.value = '';
+  }
+});
+document.getElementById('f-exp-category-select').addEventListener('change', (e)=>{
+  const catInput = document.getElementById('f-exp-category');
+  if(e.target.value === '__custom__'){
+    catInput.style.display = 'block';
+    catInput.focus();
+  } else {
+    catInput.style.display = 'none';
+    catInput.value = '';
+  }
+});
+document.getElementById('saveExpenseBtn').addEventListener('click', ()=>{
+  const evtSelectVal = document.getElementById('f-exp-event-select').value;
+  const event = evtSelectVal === '__custom__'
+    ? document.getElementById('f-exp-event').value.trim()
+    : evtSelectVal;
+  const itemName = document.getElementById('f-exp-item').value.trim();
+  if(!event || !itemName){ alert('Please enter at least the event and item/vendor name.'); return; }
+  const catSelectVal = document.getElementById('f-exp-category-select').value;
+  const category = catSelectVal === '__custom__'
+    ? document.getElementById('f-exp-category').value.trim()
+    : catSelectVal;
+  const obj = editingExpense || { id: uid() };
+  const wasEditing = !!editingExpense;
+  obj.event = event; obj.item = itemName; obj.category = category;
+  obj.contact = document.getElementById('f-exp-contact').value.trim();
+  obj.total = parseFloat(document.getElementById('f-exp-total').value) || 0;
+  obj.advance = parseFloat(document.getElementById('f-exp-advance').value) || 0;
+  obj.date = document.getElementById('f-exp-date').value;
+  obj.notes = document.getElementById('f-exp-notes').value.trim();
+  if(!editingExpense) data.expenses.push(obj);
+  logActivity(wasEditing?'edit':'add', `${wasEditing?'Updated':'Added'} expense: ${obj.item} (${obj.event})`);
+  save(); closeModal('expenseModal'); renderExpenses(); renderOverview();
+});
+function deleteExpense(item){
+  showConfirm(`Delete the expense "${item.item}" (${item.event})? This cannot be undone.`, ()=>{
+    const idx = indexOf(data.expenses, item);
+    if(idx > -1) data.expenses.splice(idx,1);
+    logActivity('delete', `Deleted expense: ${item.item} (${item.event})`);
+    save(); renderExpenses(); renderOverview();
+  }, 'Delete expense');
+}
+document.getElementById('clearExpensesBtn').addEventListener('click', ()=>{
+  if(data.expenses.length === 0){ alert('Expenditure list is already empty.'); return; }
+  const count = data.expenses.length;
+  showConfirm(`Remove all ${count} expense entries? This cannot be undone.`, ()=>{
+    data.expenses = [];
+    logActivity('batch', `Cleared all expenses (${count} removed)`);
+    save(); renderExpenses(); renderOverview();
+  }, 'Clear all expenses');
+});
+document.getElementById('expEventFilter').addEventListener('change', renderExpenses);
+document.getElementById('expSearch').addEventListener('input', renderExpenses);
+
+function renderExpenses(){
+  const filterSel = document.getElementById('expEventFilter');
+  const events = [...new Set(data.expenses.map(e=>e.event))].sort();
+  const curFilterVal = filterSel.value;
+  filterSel.innerHTML = '<option value="">All events</option>' + events.map(ev=>`<option value="${esc(ev)}">${esc(ev)}</option>`).join('');
+  filterSel.value = curFilterVal;
+
+  const search = document.getElementById('expSearch').value.toLowerCase();
+  const evFilter = filterSel.value;
+
+  let rows = data.expenses.filter(e=>{
+    if(evFilter && e.event !== evFilter) return false;
+    if(search){
+      const hay = (e.item+' '+e.notes+' '+e.contact).toLowerCase();
+      if(!hay.includes(search)) return false;
+    }
+    return true;
+  });
+  rows.sort((a,b)=> (a.event||'').localeCompare(b.event||'') || (a.item||'').localeCompare(b.item||''));
+
+  const tbody = document.getElementById('expenseTableBody');
+  const empty = document.getElementById('expenseEmpty');
+  if(rows.length === 0){
+    tbody.innerHTML = ''; empty.style.display = 'block';
+  } else {
+    empty.style.display = 'none';
+    tbody.innerHTML = rows.map(e=>{
+      const balance = (e.total||0) - (e.advance||0);
+      return `<tr>
+        <td><strong>${esc(e.event)}</strong></td>
+        <td>${e.category ? esc(e.category) : '<span class="muted">—</span>'}</td>
+        <td>${esc(e.item)}</td>
+        <td>${e.contact ? esc(e.contact) : '<span class="muted">—</span>'}</td>
+        <td class="num">${fmtMoney(e.total)}</td>
+        <td class="num">${fmtMoney(e.advance)}</td>
+        <td class="num" style="color:${balance>0?'var(--danger)':'var(--sage)'}; font-weight:600;">${fmtMoney(balance)}</td>
+        <td class="muted" style="max-width:180px;">${e.notes ? esc(e.notes) : '—'}</td>
+        <td>
+          <div class="row-actions">
+            <button class="icon-btn" title="Edit" data-exp-edit="${esc(e.id)}">✎</button>
+            <button class="icon-btn del" title="Delete" data-exp-del="${esc(e.id)}">✕</button>
+          </div>
+        </td>
+      </tr>`;
+    }).join('');
+  }
+}
+document.getElementById('expenseTableBody').addEventListener('click', (e)=>{
+  const editBtn = e.target.closest('[data-exp-edit]');
+  const delBtn = e.target.closest('[data-exp-del]');
+  if(editBtn){
+    const item = data.expenses.find(x=>x.id === editBtn.dataset.expEdit);
+    if(item) openExpenseModal(item);
+  } else if(delBtn){
+    const item = data.expenses.find(x=>x.id === delBtn.dataset.expDel);
+    if(item) deleteExpense(item);
+  }
+});
+
+/* =========================================================================
+   VENDORS
+   ========================================================================= */
+const DEFAULT_EVENTS = ['Engagement','Haldi','Mehendi','Sangeet','Wedding Ceremony','Reception','Cocktail Party','Bachelor / Bachelorette Party','Pre-Wedding Shoot','Post-Wedding'];
+const DEFAULT_CATEGORIES = ['Venue','Catering','Decorator','Photographer','Videographer','Makeup Artist','Mehendi Artist','Outfits','Jewelry','DJ / Music','Invitation Cards','Transport','Hotel / Stay','Pandit / Priest','Gifts / Favors'];
+let editingVendor = null;
+function openVendorModal(item){
+  editingVendor = item || null;
+  document.getElementById('vendorModalTitle').textContent = item ? 'Edit option' : 'Add vendor / option';
+  document.getElementById('f-ven-name').value = item?.name || '';
+  document.getElementById('f-ven-contact').value = item?.contact || '';
+  document.getElementById('f-ven-price').value = item?.price ?? '';
+  document.getElementById('f-ven-link').value = item?.link || '';
+  document.getElementById('f-ven-status').value = item?.status || 'Pending';
+  document.getElementById('f-ven-location').value = item?.location || '';
+  document.getElementById('f-ven-notes').value = item?.notes || '';
+
+  const cats = [...new Set([...DEFAULT_CATEGORIES, ...data.vendors.map(v=>v.category)])].filter(Boolean).sort();
+  const catSelect = document.getElementById('f-ven-category-select');
+  const catInput = document.getElementById('f-ven-category');
+  catSelect.innerHTML = cats.map(c=>`<option value="${esc(c)}">${esc(c)}</option>`).join('')
+    + `<option value="__custom__">Other (type your own)…</option>`;
+
+  const currentCategory = item?.category || '';
+  if(currentCategory && !cats.includes(currentCategory)){
+    // Editing a vendor whose category isn't in the known list (an older
+    // custom entry) — select "Other" and show the value in the text field.
+    catSelect.value = '__custom__';
+    catInput.value = currentCategory;
+    catInput.style.display = 'block';
+  } else {
+    catSelect.value = currentCategory || cats[0] || '__custom__';
+    catInput.value = '';
+    catInput.style.display = 'none';
+  }
+  openModal('vendorModal');
+}
+document.getElementById('f-ven-category-select').addEventListener('change', (e)=>{
+  const catInput = document.getElementById('f-ven-category');
+  if(e.target.value === '__custom__'){
+    catInput.style.display = 'block';
+    catInput.focus();
+  } else {
+    catInput.style.display = 'none';
+    catInput.value = '';
+  }
+});
+document.getElementById('saveVendorBtn').addEventListener('click', ()=>{
+  const catSelectVal = document.getElementById('f-ven-category-select').value;
+  const category = catSelectVal === '__custom__'
+    ? document.getElementById('f-ven-category').value.trim()
+    : catSelectVal;
+  const name = document.getElementById('f-ven-name').value.trim();
+  if(!category || !name){ alert('Please enter at least the category and name.'); return; }
+  const obj = editingVendor || { id: uid() };
+  const wasEditing = !!editingVendor;
+  obj.category = category; obj.name = name;
+  obj.contact = document.getElementById('f-ven-contact').value.trim();
+  obj.price = parseFloat(document.getElementById('f-ven-price').value) || 0;
+  obj.link = normalizeLink(document.getElementById('f-ven-link').value.trim());
+  obj.status = document.getElementById('f-ven-status').value;
+  obj.location = document.getElementById('f-ven-location').value.trim();
+  obj.notes = document.getElementById('f-ven-notes').value.trim();
+  if(!editingVendor) data.vendors.push(obj);
+  logActivity(wasEditing?'edit':'add', `${wasEditing?'Updated':'Added'} vendor: ${obj.name} (${obj.category})`);
+  save(); closeModal('vendorModal'); renderVendors();
+});
+function deleteVendor(item){
+  showConfirm(`Delete "${item.name}" from ${item.category}? This cannot be undone.`, ()=>{
+    const idx = indexOf(data.vendors, item);
+    if(idx > -1) data.vendors.splice(idx,1);
+    logActivity('delete', `Deleted vendor: ${item.name} (${item.category})`);
+    save(); renderVendors();
+  }, 'Delete option');
+}
+document.getElementById('clearVendorsBtn').addEventListener('click', ()=>{
+  if(data.vendors.length === 0){ alert('Vendor list is already empty.'); return; }
+  const count = data.vendors.length;
+  showConfirm(`Remove all ${count} vendor/option entries? This cannot be undone.`, ()=>{
+    data.vendors = [];
+    logActivity('batch', `Cleared all vendors (${count} removed)`);
+    save(); renderVendors();
+  }, 'Clear all vendors');
+});
+document.getElementById('venCategoryFilter').addEventListener('change', renderVendors);
+document.getElementById('venStatusFilter').addEventListener('change', renderVendors);
+document.getElementById('venSearch').addEventListener('input', renderVendors);
+
+function statusClass(s){
+  return {Booked:'status-booked', Shortlisted:'status-shortlisted', Rejected:'status-rejected', Pending:'status-pending'}[s] || 'status-pending';
+}
+function renderVendors(){
+  const catSel = document.getElementById('venCategoryFilter');
+  const cats = [...new Set(data.vendors.map(v=>v.category))].sort();
+  const curCat = catSel.value;
+  catSel.innerHTML = '<option value="">All categories</option>' + cats.map(c=>`<option value="${esc(c)}">${esc(c)}</option>`).join('');
+  catSel.value = curCat;
+
+  const statusFilter = document.getElementById('venStatusFilter').value;
+  const search = document.getElementById('venSearch').value.toLowerCase();
+
+  let rows = data.vendors.filter(v=>{
+    if(catSel.value && v.category !== catSel.value) return false;
+    if(statusFilter && v.status !== statusFilter) return false;
+    if(search){
+      const hay = (v.name+' '+v.notes+' '+v.location).toLowerCase();
+      if(!hay.includes(search)) return false;
+    }
+    return true;
+  });
+  rows.sort((a,b)=> (a.category||'').localeCompare(b.category||'') || (a.name||'').localeCompare(b.name||''));
+
+  const tbody = document.getElementById('vendorTableBody');
+  const empty = document.getElementById('vendorEmpty');
+  // Drop any selected ids that no longer exist (e.g. deleted vendors)
+  // so the compare button never operates on stale references.
+  const validIds = new Set(data.vendors.map(v=>v.id));
+  selectedVendorIds = new Set([...selectedVendorIds].filter(id=>validIds.has(id)));
+  if(rows.length === 0){
+    tbody.innerHTML = ''; empty.style.display = 'block';
+  } else {
+    empty.style.display = 'none';
+    tbody.innerHTML = rows.map(v=>{
+      return `<tr>
+        <td><input type="checkbox" data-ven-select="${esc(v.id)}" ${selectedVendorIds.has(v.id)?'checked':''}></td>
+        <td><strong>${esc(v.category)}</strong></td>
+        <td>${esc(v.name)}${v.location ? `<div class="muted">${esc(v.location)}</div>` : ''}</td>
+        <td>${v.contact ? esc(v.contact) : '<span class="muted">—</span>'}</td>
+        <td class="num">${v.price ? fmtMoney(v.price) : '<span class="muted">—</span>'}</td>
+        <td>${v.link ? `<a class="link-pill" href="${esc(v.link)}" target="_blank" rel="noopener">Visit ↗</a>` : '<span class="muted">—</span>'}</td>
+        <td><span class="badge ${statusClass(v.status)}">${esc(v.status)}</span></td>
+        <td class="muted" style="max-width:200px;">${v.notes ? esc(v.notes) : '—'}</td>
+        <td>
+          <div class="row-actions">
+            <button class="icon-btn" title="Edit" data-ven-edit="${esc(v.id)}">✎</button>
+            <button class="icon-btn del" title="Delete" data-ven-del="${esc(v.id)}">✕</button>
+          </div>
+        </td>
+      </tr>`;
+    }).join('');
+  }
+}
+let selectedVendorIds = new Set();
+document.getElementById('vendorTableBody').addEventListener('change', (e)=>{
+  const cb = e.target.closest('[data-ven-select]');
+  if(!cb) return;
+  const id = cb.dataset.venSelect;
+  if(cb.checked) selectedVendorIds.add(id);
+  else selectedVendorIds.delete(id);
+});
+document.getElementById('compareVendorsBtn').addEventListener('click', ()=>{
+  const selected = data.vendors.filter(v=>selectedVendorIds.has(v.id));
+  if(selected.length < 2){
+    alert('Select at least 2 vendors (using the checkboxes on the left of the table) to compare them side by side.');
+    return;
+  }
+  const fields = [
+    { label:'Category', get:v=>v.category || '—' },
+    { label:'Name', get:v=>v.name || '—' },
+    { label:'Location', get:v=>v.location || '—' },
+    { label:'Contact', get:v=>v.contact || '—' },
+    { label:'Price estimate', get:v=>v.price ? fmtMoney(v.price) : '—' },
+    { label:'Status', get:v=>v.status || '—' },
+    { label:'Link', get:v=>v.link ? `<a class="link-pill" href="${esc(v.link)}" target="_blank" rel="noopener">Visit ↗</a>` : '—' },
+    { label:'Notes', get:v=>v.notes || '—' },
+  ];
+  const wrap = document.getElementById('compareTableWrap');
+  wrap.innerHTML = `<table style="min-width:${140 + selected.length*220}px;">
+    <thead><tr><th></th>${selected.map(v=>`<th>${esc(v.name)}</th>`).join('')}</tr></thead>
+    <tbody>
+      ${fields.map(f=>`<tr><td><strong>${esc(f.label)}</strong></td>${selected.map(v=>{
+        const val = f.get(v);
+        return `<td>${f.label==='Link' ? val : esc(String(val))}</td>`;
+      }).join('')}</tr>`).join('')}
+    </tbody>
+  </table>`;
+  openModal('compareModal');
+});
+document.getElementById('vendorTableBody').addEventListener('click', (e)=>{
+  const editBtn = e.target.closest('[data-ven-edit]');
+  const delBtn = e.target.closest('[data-ven-del]');
+  if(editBtn){
+    const item = data.vendors.find(x=>x.id === editBtn.dataset.venEdit);
+    if(item) openVendorModal(item);
+  } else if(delBtn){
+    const item = data.vendors.find(x=>x.id === delBtn.dataset.venDel);
+    if(item) deleteVendor(item);
+  }
+});
+
+/* =========================================================================
+   GUESTS
+   ========================================================================= */
+let editingGuest = null;
+function openGuestModal(item){
+  editingGuest = item || null;
+  document.getElementById('guestModalTitle').textContent = item ? 'Edit guest' : 'Add guest';
+  document.getElementById('f-guest-name').value = item?.name || '';
+  document.getElementById('f-guest-side').value = item?.side || 'Bride';
+  document.getElementById('f-guest-city').value = item?.city || '';
+  document.getElementById('f-guest-count').value = item?.count ?? 1;
+  document.getElementById('f-guest-invite').value = item?.invite || 'No';
+  document.getElementById('f-guest-rsvp').value = item?.rsvp || 'Pending';
+  document.getElementById('f-guest-notes').value = item?.notes || '';
+
+  populateContactCountrySelect();
+  const contactInput = document.getElementById('f-guest-contact');
+  const countrySelect = document.getElementById('f-guest-contact-country');
+  const existingContact = item?.contact || '';
+  // If the stored number starts with a recognizable country code (it will,
+  // for anything saved since this validator was added), detect the
+  // country so the dropdown and displayed number match on edit; otherwise
+  // just show the raw stored value and leave the default country as-is.
+  if(existingContact && typeof libphonenumber !== 'undefined'){
+    try{
+      const parsed = libphonenumber.parsePhoneNumberFromString(existingContact);
+      if(parsed && parsed.country){
+        countrySelect.value = parsed.country;
+        contactInput.value = parsed.formatNational();
+      } else {
+        contactInput.value = existingContact;
+      }
+    }catch(e){
+      contactInput.value = existingContact;
+    }
+  } else {
+    contactInput.value = existingContact;
+  }
+
+  contactInput.classList.remove('invalid');
+  document.getElementById('f-guest-contact-error').style.display = 'none';
+  openModal('guestModal');
+}
+// Common countries shown first (matches typical guest-list use), the rest
+// follow alphabetically. Uses libphonenumber-js's own country/calling-code
+// data so the list and the validation logic never disagree.
+const COMMON_COUNTRY_CODES = ['IN','US','GB','AE','CA','AU','SG','NP','PK','BD','LK'];
+function populateContactCountrySelect(){
+  const sel = document.getElementById('f-guest-contact-country');
+  if(typeof libphonenumber === 'undefined'){
+    // Library failed to load (e.g. offline) — fall back to a plain text
+    // field with no country picker rather than leaving it broken.
+    sel.style.display = 'none';
+    return;
+  }
+  const all = libphonenumber.getCountries();
+  const withCallingCode = (c) => `${c} (+${libphonenumber.getCountryCallingCode(c)})`;
+  const rest = all.filter(c => !COMMON_COUNTRY_CODES.includes(c)).sort();
+  const ordered = [...COMMON_COUNTRY_CODES.filter(c => all.includes(c)), ...rest];
+  sel.innerHTML = ordered.map(c => `<option value="${c}">${withCallingCode(c)}</option>`).join('');
+  sel.value = 'IN';
+}
+
+function validateContact(raw, countryCode){
+  const trimmed = raw.trim();
+  if(!trimmed) return { ok:true, value:'' }; // contact is optional
+
+  if(typeof libphonenumber === 'undefined'){
+    // Fallback if the CDN library didn't load (e.g. no network access to
+    // cdnjs): can't check against real per-country numbering plans, so
+    // apply a general sanity check instead — no letters, digits only
+    // (allowing +, spaces, dashes, parentheses as formatting), and a
+    // plausible international length range (7–15 digits per ITU E.164).
+    if(/[a-zA-Z]/.test(trimmed)) return { ok:false, message:'Contact number cannot contain letters.' };
+    const digitsOnly = trimmed.replace(/[\s\-()]/g, '').replace(/^\+/, '');
+    if(!/^\d+$/.test(digitsOnly)) return { ok:false, message:'Contact number can only contain digits.' };
+    if(digitsOnly.length < 7 || digitsOnly.length > 15) return { ok:false, message:'Contact number should be between 7 and 15 digits.' };
+    return { ok:true, value:trimmed };
+  }
+
+  let parsed;
+  try{
+    parsed = libphonenumber.parsePhoneNumberFromString(trimmed, countryCode);
+  }catch(e){
+    parsed = undefined;
+  }
+
+  if(!parsed){
+    return { ok:false, message:'Enter a valid phone number for the selected country.' };
+  }
+  if(!parsed.isValid()){
+    return { ok:false, message:`That's not a valid ${parsed.country || countryCode} phone number — check the digit count.` };
+  }
+  // Store in E.164 international format (e.g. +919876543210) so the
+  // number is unambiguous regardless of how it was typed.
+  return { ok:true, value: parsed.number };
+}
+
+function showContactValidation(inputEl, errorEl){
+  const country = document.getElementById('f-guest-contact-country').value || 'IN';
+  const result = validateContact(inputEl.value, country);
+  if(result.ok){
+    inputEl.classList.remove('invalid');
+    errorEl.style.display = 'none';
+    errorEl.textContent = '';
+  } else {
+    inputEl.classList.add('invalid');
+    errorEl.style.display = 'block';
+    errorEl.textContent = result.message;
+  }
+  return result.ok;
+}
+document.getElementById('f-guest-contact').addEventListener('input', (e)=>{
+  showContactValidation(e.target, document.getElementById('f-guest-contact-error'));
+});
+document.getElementById('f-guest-contact-country').addEventListener('change', ()=>{
+  showContactValidation(document.getElementById('f-guest-contact'), document.getElementById('f-guest-contact-error'));
+});
+
+document.getElementById('saveGuestBtn').addEventListener('click', ()=>{
+  const name = document.getElementById('f-guest-name').value.trim();
+  if(!name){ alert('Please enter a name.'); return; }
+  const contactInput = document.getElementById('f-guest-contact');
+  const country = document.getElementById('f-guest-contact-country').value || 'IN';
+  const contactCheck = validateContact(contactInput.value, country);
+  if(!contactCheck.ok){
+    showContactValidation(contactInput, document.getElementById('f-guest-contact-error'));
+    contactInput.focus();
+    return;
+  }
+  const obj = editingGuest || { id: uid() };
+  const wasEditing = !!editingGuest;
+  obj.name = name;
+  obj.side = document.getElementById('f-guest-side').value;
+  obj.contact = contactCheck.value;
+  obj.city = document.getElementById('f-guest-city').value.trim();
+  obj.count = parseInt(document.getElementById('f-guest-count').value) || 1;
+  obj.invite = document.getElementById('f-guest-invite').value;
+  obj.rsvp = document.getElementById('f-guest-rsvp').value;
+  obj.notes = document.getElementById('f-guest-notes').value.trim();
+  if(!editingGuest) data.guests.push(obj);
+  logActivity(wasEditing?'edit':'add', `${wasEditing?'Updated':'Added'} guest: ${obj.name}`);
+  save(); closeModal('guestModal'); renderGuests();
+});
+function deleteGuest(item){
+  const idx = indexOf(data.guests, item);
+  if(idx > -1) data.guests.splice(idx,1);
+  logActivity('delete', `Deleted guest: ${item.name}`);
+  save(); renderGuests();
+}
+document.getElementById('clearGuestsBtn').addEventListener('click', ()=>{
+  if(data.guests.length === 0){ alert('Guest list is already empty.'); return; }
+  const count = data.guests.length;
+  showConfirm(`Remove all ${count} guest${count===1?'':'s'} from the list? This cannot be undone.`, ()=>{
+    data.guests = [];
+    logActivity('batch', `Cleared all guests (${count} removed)`);
+    save(); renderGuests();
+  }, 'Clear all guests');
+});
+document.getElementById('guestSideFilter').addEventListener('change', renderGuests);
+document.getElementById('guestRsvpFilter').addEventListener('change', renderGuests);
+document.getElementById('guestSearch').addEventListener('input', renderGuests);
+
+function rsvpClass(s){
+  return {Yes:'rsvp-yes', No:'rsvp-no', Maybe:'rsvp-maybe', Pending:'rsvp-pending'}[s] || 'rsvp-pending';
+}
+function renderGuestStats(){
+  const total = data.guests.reduce((s,g)=>s+(g.count||1),0);
+  const confirmed = data.guests.filter(g=>g.rsvp==='Yes').reduce((s,g)=>s+(g.count||1),0);
+  const pending = data.guests.filter(g=>g.rsvp==='Pending').reduce((s,g)=>s+(g.count||1),0);
+  const invitesSent = data.guests.filter(g=>g.invite==='Yes').length;
+  const grid = document.getElementById('guestStatGrid');
+  grid.innerHTML = `
+    <div class="stat-card"><div class="stat-label">Total guests</div><div class="stat-value small">${total}</div><div class="stat-sub">${data.guests.length} entries</div></div>
+    <div class="stat-card good"><div class="stat-label">Confirmed</div><div class="stat-value small">${confirmed}</div></div>
+    <div class="stat-card warn"><div class="stat-label">Pending RSVP</div><div class="stat-value small">${pending}</div></div>
+    <div class="stat-card"><div class="stat-label">Invites sent</div><div class="stat-value small">${invitesSent} / ${data.guests.length}</div></div>
+  `;
+}
+
+function getFilteredGuests(){
+  const sideFilter = document.getElementById('guestSideFilter').value;
+  const rsvpFilter = document.getElementById('guestRsvpFilter').value;
+  const search = document.getElementById('guestSearch').value.toLowerCase();
+  let rows = data.guests.filter(g=>{
+    if(sideFilter && g.side !== sideFilter) return false;
+    if(rsvpFilter && g.rsvp !== rsvpFilter) return false;
+    if(search){
+      const hay = (g.name+' '+g.city+' '+g.notes).toLowerCase();
+      if(!hay.includes(search)) return false;
+    }
+    return true;
+  });
+  rows.sort((a,b)=> (a.name||'').localeCompare(b.name||''));
+  return rows;
+}
+function renderGuests(){
+  renderGuestStats();
+  let rows = getFilteredGuests();
+
+  const tbody = document.getElementById('guestTableBody');
+  const empty = document.getElementById('guestEmpty');
+  if(rows.length === 0){
+    tbody.innerHTML = ''; empty.style.display = 'block';
+  } else {
+    empty.style.display = 'none';
+    tbody.innerHTML = rows.map((g)=>{
+      return `<tr>
+        <td><strong>${esc(g.name)}</strong></td>
+        <td>${esc(g.side)}</td>
+        <td>${g.contact ? esc(g.contact) : '<span class="muted">—</span>'}</td>
+        <td>${g.city ? esc(g.city) : '<span class="muted">—</span>'}</td>
+        <td class="num">${g.count || 1}</td>
+        <td>
+          <select class="inline-status-select" data-guest-invite="${esc(g.id)}">
+            <option value="No" ${g.invite!=='Yes'?'selected':''}>Not sent</option>
+            <option value="Yes" ${g.invite==='Yes'?'selected':''}>Sent</option>
+          </select>
+        </td>
+        <td>
+          <select class="inline-status-select rsvp-${rsvpClass(g.rsvp)}" data-guest-rsvp="${esc(g.id)}">
+            <option value="Pending" ${g.rsvp==='Pending'?'selected':''}>Pending</option>
+            <option value="Yes" ${g.rsvp==='Yes'?'selected':''}>Yes</option>
+            <option value="No" ${g.rsvp==='No'?'selected':''}>No</option>
+            <option value="Maybe" ${g.rsvp==='Maybe'?'selected':''}>Maybe</option>
+          </select>
+        </td>
+        <td class="muted" style="max-width:180px;">${g.notes ? esc(g.notes) : '—'}</td>
+        <td>
+          <div class="row-actions">
+            <button class="icon-btn" title="Edit" data-guest-edit="${esc(g.id)}">✎</button>
+            <button class="icon-btn del" title="Delete guest" data-guest-del="${esc(g.id)}">✕</button>
+          </div>
+        </td>
+      </tr>`;
+    }).join('');
+  }
+}
+
+document.getElementById('guestTableBody').addEventListener('click', (e)=>{
+  const editBtn = e.target.closest('[data-guest-edit]');
+  const delBtn = e.target.closest('[data-guest-del]');
+  if(editBtn){
+    const item = data.guests.find(x=>x.id === editBtn.dataset.guestEdit);
+    if(item) openGuestModal(item);
+  } else if(delBtn){
+    const item = data.guests.find(x=>x.id === delBtn.dataset.guestDel);
+    if(item) deleteGuest(item);
+  }
+});
+document.getElementById('guestTableBody').addEventListener('change', (e)=>{
+  const inviteSel = e.target.closest('[data-guest-invite]');
+  const rsvpSel = e.target.closest('[data-guest-rsvp]');
+  if(inviteSel){
+    const item = data.guests.find(x=>x.id === inviteSel.dataset.guestInvite);
+    if(item){ item.invite = inviteSel.value; save(); renderGuestStats(); }
+  } else if(rsvpSel){
+    const item = data.guests.find(x=>x.id === rsvpSel.dataset.guestRsvp);
+    if(item){
+      item.rsvp = rsvpSel.value;
+      save();
+      // Update the select's color class in place, and refresh the stat
+      // cards, without a full re-render that would rebuild every row
+      // (and lose focus) just for one field changing.
+      rsvpSel.className = 'inline-status-select rsvp-' + rsvpClass(item.rsvp);
+      renderGuestStats();
+    }
+  }
+});
+
+/* Shared review-table state, used by the paste-list flow below. */
+let extractedRows = [];
+
+function renderExtractTable(){
+  document.getElementById('extractModalTitle').textContent = `Review extracted guests (${extractedRows.length} found)`;
+  document.getElementById('extractStatus').textContent = 'Review every field below — uncheck any rows you don\'t want, edit anything that needs fixing, then add them.';
+  const wrap = document.getElementById('extractTableWrap');
+  wrap.innerHTML = extractedRows.map((r,i)=>`
+    <div class="extract-card">
+      <div class="extract-card-top">
+        <input type="checkbox" ${r.include?'checked':''} data-extract-toggle="${i}">
+        <button class="icon-btn del" title="Remove" data-extract-remove="${i}">✕</button>
+      </div>
+      <div class="extract-card-fields">
+        <div class="extract-field">
+          <label>Name</label>
+          <input type="text" value="${esc(r.name)}" placeholder="Name" data-extract-name="${i}">
+        </div>
+        <div class="extract-field" style="max-width:90px;">
+          <label># Guests</label>
+          <input type="number" min="1" value="${r.count}" data-extract-count="${i}">
+        </div>
+        <div class="extract-field">
+          <label>Mobile</label>
+          <input type="text" value="${esc(r.contact || '')}" placeholder="Mobile" data-extract-contact="${i}">
+        </div>
+        <div class="extract-field">
+          <label>City</label>
+          <input type="text" value="${esc(r.city || '')}" placeholder="City" data-extract-city="${i}">
+        </div>
+      </div>
+    </div>
+  `).join('');
+  document.getElementById('extractAddBtn').style.display = 'inline-flex';
+}
+document.getElementById('extractTableWrap').addEventListener('input', (e)=>{
+  const nameInput = e.target.closest('[data-extract-name]');
+  const countInput = e.target.closest('[data-extract-count]');
+  const contactInput = e.target.closest('[data-extract-contact]');
+  const cityInput = e.target.closest('[data-extract-city]');
+  if(nameInput) extractedRows[parseInt(nameInput.dataset.extractName)].name = nameInput.value;
+  if(countInput) extractedRows[parseInt(countInput.dataset.extractCount)].count = parseInt(countInput.value) || 1;
+  if(contactInput) extractedRows[parseInt(contactInput.dataset.extractContact)].contact = contactInput.value;
+  if(cityInput) extractedRows[parseInt(cityInput.dataset.extractCity)].city = cityInput.value;
+});
+document.getElementById('extractTableWrap').addEventListener('change', (e)=>{
+  const toggle = e.target.closest('[data-extract-toggle]');
+  if(toggle) extractedRows[parseInt(toggle.dataset.extractToggle)].include = toggle.checked;
+});
+document.getElementById('extractTableWrap').addEventListener('click', (e)=>{
+  const removeBtn = e.target.closest('[data-extract-remove]');
+  if(removeBtn){
+    extractedRows.splice(parseInt(removeBtn.dataset.extractRemove), 1);
+    renderExtractTable();
+  }
+});
+let pendingGuestSide = 'Bride';
+document.getElementById('extractAddBtn').addEventListener('click', ()=>{
+  const toAdd = extractedRows.filter(r => r.include && r.name.trim());
+  if(toAdd.length === 0){ alert('No rows selected to add.'); return; }
+  toAdd.forEach(r=>{
+    data.guests.push({
+      id: uid(), name: r.name.trim(), side: pendingGuestSide, contact: r.contact || '',
+      city: r.city || '', count: r.count || 1, invite: 'No', rsvp: 'Pending', notes: r.notes || ''
+    });
+  });
+  logActivity('batch', `Added ${toAdd.length} guest${toAdd.length===1?'':'s'} via paste import (${pendingGuestSide}'s side)`);
+  save();
+  closeModal('extractModal');
+  renderGuests();
+});
+
+/* ---- Paste guest list (fixed formats, no header needed) ---- */
+let pendingPasteRows = null; // parsed rows waiting on a side choice
+let selectedPasteFormat = 'name-count-mobile'; // default: Name, Guest count, Mobile
+
+// Fixed set of supported column layouts. "Name, Guest count, Mobile" is
+// the default shown up front; the person can expand "Change format" if
+// their list is laid out differently instead of us guessing from a
+// typed header.
+const PASTE_FORMATS = [
+  { id:'name-count-mobile',       label:'Name, Guest count, Mobile',        example:'Amit, 2, 9876543210',              cols:['name','count','contact'] },
+  { id:'name-count',              label:'Name, Guest count',                example:'Sushant, 5',                       cols:['name','count'] },
+  { id:'name-mobile',             label:'Name, Mobile',                     example:'Shubham, 9876543210',              cols:['name','contact'] },
+  { id:'name-only',               label:'Name only',                        example:'Priya',                            cols:['name'] },
+  { id:'name-city-mobile',        label:'Name, City, Mobile',               example:'Meena, Jaipur, 9876543210',        cols:['name','city','contact'] },
+  { id:'name-mobile-city',        label:'Name, Mobile, City',               example:'Meena, 9876543210, Jaipur',        cols:['name','contact','city'] },
+  { id:'name-count-city',         label:'Name, Guest count, City',          example:'Arjun, 3, Delhi',                  cols:['name','count','city'] },
+  { id:'name-count-mobile-city',  label:'Name, Guest count, Mobile, City',  example:'Rohan, 3, 9876543210, Delhi',      cols:['name','count','contact','city'] },
+  { id:'custom',                  label:'Custom order…',                    example:'Choose what each column means',    cols:null },
+];
+
+function renderFormatPicker(){
+  const wrap = document.getElementById('formatPicker');
+  wrap.innerHTML = PASTE_FORMATS.map(f => `
+    <label class="format-option ${f.id===selectedPasteFormat?'selected':''}" data-format-option="${f.id}">
+      <input type="radio" name="pasteFormat" value="${f.id}" ${f.id===selectedPasteFormat?'checked':''}>
+      <div class="format-option-body">
+        <div class="format-option-label">${esc(f.label)}</div>
+        <div class="format-option-example">e.g. ${esc(f.example)}</div>
+      </div>
+    </label>
+  `).join('');
+}
+let customCols = ['name','count','contact']; // live state for the custom builder
+
+function updateFormatSummary(){
+  const format = PASTE_FORMATS.find(f => f.id === selectedPasteFormat);
+  document.getElementById('formatCurrentLabel').textContent = format.label;
+  document.getElementById('formatCurrentExample').textContent = 'e.g. ' + format.example;
+}
+
+const COL_MEANINGS = [
+  { id:'name', label:'Name' },
+  { id:'count', label:'Guest count' },
+  { id:'contact', label:'Mobile' },
+  { id:'city', label:'City' },
+];
+function renderCustomColSlots(){
+  const count = parseInt(document.getElementById('customColCount').value);
+  // Keep any meanings already chosen for the slots that still exist;
+  // fill new slots with the next unused meaning as a sensible guess.
+  const used = new Set();
+  const slots = [];
+  for(let i=0;i<count;i++){
+    let val = customCols[i];
+    if(!val || used.has(val)){
+      val = COL_MEANINGS.find(m => !used.has(m.id))?.id || 'name';
+    }
+    used.add(val);
+    slots.push(val);
+  }
+  customCols = slots;
+
+  const wrap = document.getElementById('customColSlots');
+  wrap.innerHTML = customCols.map((val, i) => `
+    <div style="display:flex; align-items:center; gap:8px;">
+      <span class="muted" style="font-size:11.5px; width:64px;">Column ${i+1}:</span>
+      <select data-custom-col="${i}" style="flex:1; padding:7px 10px; border:1px solid var(--line-strong); border-radius:8px; background:var(--panel); color:var(--text); font-size:12.5px;">
+        ${COL_MEANINGS.map(m => `<option value="${m.id}" ${m.id===val?'selected':''}>${m.label}</option>`).join('')}
+      </select>
+    </div>
+  `).join('');
+  updateCustomExample();
+}
+function updateCustomExample(){
+  const sampleValues = { name:'Amit', count:'2', contact:'9876543210', city:'Delhi' };
+  const example = customCols.map(c => sampleValues[c]).join(', ');
+  document.getElementById('pasteTextarea').placeholder = example + '\n...';
+}
+document.getElementById('customColCount').addEventListener('change', renderCustomColSlots);
+document.getElementById('customColSlots').addEventListener('change', (e)=>{
+  const sel = e.target.closest('[data-custom-col]');
+  if(!sel) return;
+  customCols[parseInt(sel.dataset.customCol)] = sel.value;
+  updateCustomExample();
+});
+
+document.getElementById('formatPicker').addEventListener('click', (e)=>{
+  const opt = e.target.closest('[data-format-option]');
+  if(!opt) return;
+  selectedPasteFormat = opt.dataset.formatOption;
+  document.querySelectorAll('.format-option').forEach(el=>el.classList.remove('selected'));
+  opt.classList.add('selected');
+  opt.querySelector('input[type=radio]').checked = true;
+
+  if(selectedPasteFormat === 'custom'){
+    // Stay expanded and show the column builder instead of collapsing to
+    // the compact summary, since there's no fixed example to summarize.
+    document.getElementById('customFormatBuilder').style.display = 'block';
+    renderCustomColSlots();
+    return;
+  }
+  document.getElementById('customFormatBuilder').style.display = 'none';
+  updatePasteTextareaPlaceholder();
+  updateFormatSummary();
+  // Collapse back to the compact view once a fixed choice is made.
+  document.getElementById('formatPicker').style.display = 'none';
+  document.getElementById('formatCurrent').style.display = 'flex';
+});
+document.getElementById('changeFormatBtn').addEventListener('click', ()=>{
+  renderFormatPicker();
+  document.getElementById('formatCurrent').style.display = 'none';
+  document.getElementById('formatPicker').style.display = 'grid';
+  document.getElementById('customFormatBuilder').style.display = 'none';
+});
+function updatePasteTextareaPlaceholder(){
+  const format = PASTE_FORMATS.find(f => f.id === selectedPasteFormat);
+  document.getElementById('pasteTextarea').placeholder = format.example + '\n...';
+}
+
+document.getElementById('pasteGuestListBtn').addEventListener('click', ()=>{
+  document.getElementById('pasteTextarea').value = '';
+  selectedPasteFormat = 'name-count-mobile';
+  document.getElementById('formatCurrent').style.display = 'flex';
+  document.getElementById('formatPicker').style.display = 'none';
+  document.getElementById('customFormatBuilder').style.display = 'none';
+  updateFormatSummary();
+  updatePasteTextareaPlaceholder();
+  openModal('pasteModal');
+});
+
+/* ---- Print / export guest list ---- */
+function buildPrintGuestList(){
+  const rows = getFilteredGuests();
+  const totalGuests = rows.reduce((s,g)=>s+(g.count||1),0);
+  const confirmed = rows.filter(g=>g.rsvp==='Yes').reduce((s,g)=>s+(g.count||1),0);
+  const coupleName = document.querySelector('h1.display')?.textContent || 'Our Wedding';
+  const weddingDateVal = document.getElementById('weddingDate').value;
+  const dateLabel = weddingDateVal ? new Date(weddingDateVal+'T00:00:00').toLocaleDateString('en-IN',{day:'numeric',month:'long',year:'numeric'}) : '';
+
+  const container = document.getElementById('printGuestList');
+  if(rows.length === 0){
+    container.innerHTML = `<h1>${esc(coupleName)}</h1><div class="print-sub">Guest List${dateLabel ? ' · ' + dateLabel : ''}</div><div class="print-summary">No guests match the current filters.</div>`;
+    return;
+  }
+  container.innerHTML = `
+    <h1>${esc(coupleName)}</h1>
+    <div class="print-sub">Guest List${dateLabel ? ' · ' + dateLabel : ''} · Printed ${new Date().toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'})}</div>
+    <div class="print-summary">${rows.length} ${rows.length===1?'entry':'entries'} · ${totalGuests} total guests · ${confirmed} confirmed</div>
+    <table>
+      <thead><tr><th>Name</th><th>Side</th><th>Contact</th><th>City</th><th>Guests</th><th>Invite</th><th>RSVP</th><th>Notes</th></tr></thead>
+      <tbody>
+        ${rows.map(g=>`<tr>
+          <td>${esc(g.name)}</td>
+          <td>${esc(g.side)}</td>
+          <td>${g.contact ? esc(g.contact) : '—'}</td>
+          <td>${g.city ? esc(g.city) : '—'}</td>
+          <td>${g.count||1}</td>
+          <td>${g.invite==='Yes' ? 'Sent' : 'Not sent'}</td>
+          <td>${esc(g.rsvp)}</td>
+          <td>${g.notes ? esc(g.notes) : '—'}</td>
+        </tr>`).join('')}
+      </tbody>
+    </table>
+  `;
+}
+document.getElementById('printGuestsBtn').addEventListener('click', ()=>{
+  buildPrintGuestList();
+  // Give the browser a tick to lay out the print-only content before the
+  // print dialog opens (matters most on mobile browsers).
+  setTimeout(()=> window.print(), 50);
+});
+
+function exportGuestsPdf(){
+  const rows = getFilteredGuests();
+  if(rows.length === 0){ alert('No guests to export — add some guests first, or clear your filters.'); return; }
+
+  if(typeof jspdf === 'undefined' || typeof jspdf.jsPDF === 'undefined'){
+    // The PDF library loads from a CDN and didn't become available (most
+    // likely no internet connection). Point to the Print button instead,
+    // since a browser's own print-to-PDF works even without that library.
+    alert("PDF export needs an internet connection to load the first time. If you're offline, use the Print button instead and choose \"Save as PDF\" in the print dialog.");
+    return;
+  }
+
+  const coupleName = document.querySelector('h1.display')?.textContent || 'Our Wedding';
+  const weddingDateVal = document.getElementById('weddingDate').value;
+  const dateLabel = weddingDateVal ? new Date(weddingDateVal+'T00:00:00').toLocaleDateString('en-IN',{day:'numeric',month:'long',year:'numeric'}) : '';
+  const totalGuests = rows.reduce((s,g)=>s+(g.count||1),0);
+  const confirmed = rows.filter(g=>g.rsvp==='Yes').reduce((s,g)=>s+(g.count||1),0);
+
+  const doc = new jspdf.jsPDF({ orientation:'landscape', unit:'pt', format:'a4' });
+  doc.setFont('helvetica','bold');
+  doc.setFontSize(18);
+  doc.text(coupleName, 40, 40);
+  doc.setFont('helvetica','normal');
+  doc.setFontSize(10);
+  doc.setTextColor(90);
+  doc.text(`Guest List${dateLabel ? ' · ' + dateLabel : ''} · Printed ${new Date().toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'})}`, 40, 58);
+  doc.text(`${rows.length} ${rows.length===1?'entry':'entries'} · ${totalGuests} total guests · ${confirmed} confirmed`, 40, 72);
+
+  doc.autoTable({
+    startY: 88,
+    margin: { left: 40, right: 40 },
+    head: [['Name','Side','Contact','City','Guests','Invite','RSVP','Notes']],
+    body: rows.map(g=>[
+      g.name, g.side, g.contact||'—', g.city||'—', String(g.count||1),
+      g.invite==='Yes' ? 'Sent' : 'Not sent', g.rsvp, g.notes||'—'
+    ]),
+    styles: { fontSize: 9, cellPadding: 5 },
+    headStyles: { fillColor: [22,41,77], textColor: 255, fontStyle: 'bold' },
+    alternateRowStyles: { fillColor: [245,247,250] },
+  });
+
+  doc.save('guest-list.pdf');
+}
+document.getElementById('exportGuestsPdfBtn').addEventListener('click', exportGuestsPdf);
+
+function splitLine(line, expectedCols){
+  // Each line picks its own delimiter based on what it actually contains,
+  // in priority order: tab > comma > 2+ spaces > single space. This keeps
+  // columns aligned even if some lines omit trailing fields (e.g. no
+  // mobile number), rather than forcing one delimiter across the block.
+  let cells;
+  if(line.includes('\t')) cells = line.split('\t');
+  else if(line.includes(',')) cells = line.split(',');
+  else if(/ {2,}/.test(line)) cells = line.split(/ {2,}/);
+  else cells = line.split(/\s+/);
+  cells = cells.map(s=>s.trim()).filter(s=>s!=='');
+
+  // Narrow fallback: if a line mixes delimiters — e.g. "Amit 2,9876543210"
+  // (a space between name and count, then a comma before the mobile
+  // number) — the comma-split leaves "Amit 2" as one cell. When that
+  // happens and we're short of the expected column count, peel a trailing
+  // number off any "<text> <number>" cell into its own column. This only
+  // fires for cells ending in a bare number, so ordinary multi-word names
+  // ("Amit Kumar") are never split.
+  if(expectedCols && cells.length < expectedCols){
+    const expanded = [];
+    for(const cell of cells){
+      const m = cell.match(/^(.*\S)\s+(\d+)$/);
+      if(m){ expanded.push(m[1], m[2]); }
+      else expanded.push(cell);
+    }
+    if(expanded.length > cells.length) cells = expanded;
+  }
+  return cells;
+}
+
+function parsePastedGuestList(){
+  const format = PASTE_FORMATS.find(f => f.id === selectedPasteFormat);
+  const cols = selectedPasteFormat === 'custom' ? customCols : format.cols; // column order for the chosen format
+  if(!cols.includes('name')){
+    alert('One column must be set to "Name". Please update your custom format.');
+    return null;
+  }
+  const raw = document.getElementById('pasteTextarea').value;
+  const lines = raw.split('\n').map(l=>l.replace(/\r$/,'')).filter(l=>l.trim().length>0);
+  if(lines.length === 0){
+    alert('Please paste at least one guest line.');
+    return null;
+  }
+
+  const nameIdx = cols.indexOf('name');
+  const countIdx = cols.indexOf('count');
+  const contactIdx = cols.indexOf('contact');
+  const cityIdx = cols.indexOf('city');
+
+  const rows = [];
+  for(const line of lines){
+    const cells = splitLine(line, cols.length);
+    if(cells.length === 0) continue;
+
+    const name = cells[nameIdx] || '';
+    if(!name){
+      // Nothing usable on this line for the chosen format — keep it
+      // visible in the review step rather than silently dropping it.
+      rows.push({ include:true, name: line.trim(), count:1, contact:'', city:'' });
+      continue;
+    }
+
+    let count = 1;
+    if(countIdx !== -1 && cells[countIdx] !== undefined && cells[countIdx] !== ''){
+      const n = parseInt(cells[countIdx]);
+      if(!isNaN(n)) count = n;
+    }
+
+    let contact = contactIdx !== -1 ? (cells[contactIdx] || '') : '';
+    const city = cityIdx !== -1 ? (cells[cityIdx] || '') : '';
+
+    rows.push({ include:true, name, count, contact, city });
+  }
+
+  if(rows.length === 0){
+    alert('No guest rows could be parsed. Please check the format and try again.');
+    return null;
+  }
+  return rows;
+}
+
+document.getElementById('parsePasteBtn').addEventListener('click', ()=>{
+  const rows = parsePastedGuestList();
+  if(!rows) return;
+  pendingPasteRows = rows;
+  closeModal('pasteModal');
+  openModal('sideModal');
+});
+
+function confirmPasteSide(side){
+  pendingGuestSide = side;
+  closeModal('sideModal');
+  extractedRows = pendingPasteRows;
+  pendingPasteRows = null;
+  document.getElementById('extractStatus').textContent = '';
+  openModal('extractModal');
+  renderExtractTable();
+  document.getElementById('extractStatus').textContent = `Adding to ${side}'s side — uncheck any rows you don't want, fix names/counts if needed, then add them.`;
+}
+document.getElementById('sidePickBride').addEventListener('click', ()=> confirmPasteSide('Bride'));
+document.getElementById('sidePickGroom').addEventListener('click', ()=> confirmPasteSide('Groom'));
+
+/* =========================================================================
+   CHECKLIST / TASKS
+   ========================================================================= */
+let editingTask = null;
+function openTaskModal(item){
+  editingTask = item || null;
+  document.getElementById('taskModalTitle').textContent = item ? 'Edit task' : 'Add task';
+  document.getElementById('f-task-title').value = item?.title || '';
+  document.getElementById('f-task-due').value = item?.due || '';
+  document.getElementById('f-task-category').value = item?.category || '';
+  document.getElementById('f-task-notes').value = item?.notes || '';
+  openModal('taskModal');
+}
+document.getElementById('saveTaskBtn').addEventListener('click', ()=>{
+  const title = document.getElementById('f-task-title').value.trim();
+  if(!title){ alert('Please enter a task.'); return; }
+  const obj = editingTask || { id: uid(), done:false };
+  const wasEditing = !!editingTask;
+  obj.title = title;
+  obj.due = document.getElementById('f-task-due').value;
+  obj.category = document.getElementById('f-task-category').value.trim();
+  obj.notes = document.getElementById('f-task-notes').value.trim();
+  if(!editingTask) data.tasks.push(obj);
+  logActivity(wasEditing?'edit':'add', `${wasEditing?'Updated':'Added'} task: ${obj.title}`);
+  save(); closeModal('taskModal'); renderTasks(); renderOverview();
+});
+function toggleTask(item){
+  item.done = !item.done;
+  logActivity('edit', `${item.done?'Completed':'Reopened'} task: ${item.title}`);
+  save(); renderTasks(); renderOverview();
+}
+function deleteTask(item){
+  showConfirm(`Delete the task "${item.title}"? This cannot be undone.`, ()=>{
+    const idx = indexOf(data.tasks, item);
+    if(idx > -1) data.tasks.splice(idx,1);
+    logActivity('delete', `Deleted task: ${item.title}`);
+    save(); renderTasks(); renderOverview();
+  }, 'Delete task');
+}
+document.getElementById('clearTasksBtn').addEventListener('click', ()=>{
+  if(data.tasks.length === 0){ alert('Checklist is already empty.'); return; }
+  const count = data.tasks.length;
+  showConfirm(`Remove all ${count} tasks? This cannot be undone.`, ()=>{
+    data.tasks = [];
+    logActivity('batch', `Cleared all tasks (${count} removed)`);
+    save(); renderTasks(); renderOverview();
+  }, 'Clear all tasks');
+});
+document.getElementById('taskFilter').addEventListener('change', renderTasks);
+
+function renderTasks(){
+  const filter = document.getElementById('taskFilter').value;
+  let rows = data.tasks.filter(t=>{
+    if(filter==='pending') return !t.done;
+    if(filter==='done') return t.done;
+    return true;
+  });
+  rows.sort((a,b)=>{
+    if(!!a.done !== !!b.done) return a.done ? 1 : -1;
+    return (a.due||'9999').localeCompare(b.due||'9999');
+  });
+  const list = document.getElementById('taskList');
+  const empty = document.getElementById('taskEmpty');
+  const today = new Date().toISOString().slice(0,10);
+  if(rows.length===0){
+    list.innerHTML=''; empty.style.display='block';
+  } else {
+    empty.style.display='none';
+    list.innerHTML = rows.map(t=>{
+      const overdue = !t.done && t.due && t.due < today;
+      let dueLabel = '';
+      if(t.due){
+        const d = new Date(t.due+'T00:00:00');
+        dueLabel = d.toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'});
+      }
+      return `<div class="checklist-item ${t.done?'done':''}">
+        <input type="checkbox" ${t.done?'checked':''} data-task-toggle="${esc(t.id)}">
+        <div class="task-body">
+          <div class="task-title">${esc(t.title)}</div>
+          <div class="task-meta ${overdue?'overdue':''}">
+            ${t.category ? esc(t.category)+' · ' : ''}${dueLabel ? (overdue?'Overdue: ':'Due ')+dueLabel : 'No due date'}
+            ${t.notes ? ' · '+esc(t.notes) : ''}
+          </div>
+        </div>
+        <div class="row-actions">
+          <button class="icon-btn" title="Edit" data-task-edit="${esc(t.id)}">✎</button>
+          <button class="icon-btn del" title="Delete" data-task-del="${esc(t.id)}">✕</button>
+        </div>
+      </div>`;
+    }).join('');
+  }
+}
+
+const ACTIVITY_ICON = { add:'act-add', edit:'act-edit', delete:'act-delete', batch:'act-batch' };
+function renderActivity(){
+  const list = document.getElementById('activityList');
+  const empty = document.getElementById('activityEmpty');
+  const entries = data.activity || [];
+  if(entries.length === 0){
+    list.innerHTML = ''; empty.style.display = 'block';
+    return;
+  }
+  empty.style.display = 'none';
+  list.innerHTML = entries.map(a=>`
+    <div class="activity-item">
+      <span class="activity-dot ${ACTIVITY_ICON[a.type] || 'act-add'}"></span>
+      <div class="activity-body">
+        <div class="activity-message">${esc(a.message)}</div>
+        <div class="activity-time">${relativeTimeFromNow(a.at)}</div>
+      </div>
+    </div>
+  `).join('');
+}
+document.getElementById('clearActivityBtn').addEventListener('click', ()=>{
+  if(!data.activity || data.activity.length === 0){ alert('Activity log is already empty.'); return; }
+  showConfirm(`Clear the activity log (${data.activity.length} entries)? This cannot be undone.`, ()=>{
+    data.activity = []; save(); renderActivity();
+  }, 'Clear activity log');
+});
+
+document.getElementById('taskList').addEventListener('click', (e)=>{
+  const editBtn = e.target.closest('[data-task-edit]');
+  const delBtn = e.target.closest('[data-task-del]');
+  if(editBtn){
+    const item = data.tasks.find(x=>x.id === editBtn.dataset.taskEdit);
+    if(item) openTaskModal(item);
+  } else if(delBtn){
+    const item = data.tasks.find(x=>x.id === delBtn.dataset.taskDel);
+    if(item) deleteTask(item);
+  }
+});
+document.getElementById('taskList').addEventListener('change', (e)=>{
+  const toggle = e.target.closest('[data-task-toggle]');
+  if(toggle){
+    const item = data.tasks.find(x=>x.id === toggle.dataset.taskToggle);
+    if(item) toggleTask(item);
+  }
+});
+
+/* =========================================================================
+   OVERVIEW
+   ========================================================================= */
+function renderOverview(){
+  const totalBudget = parseFloat(data.totalBudget) || 0;
+  const totalSpent = data.expenses.reduce((s,e)=>s+(e.total||0),0);
+  const totalAdvance = data.expenses.reduce((s,e)=>s+(e.advance||0),0);
+  const totalBalance = totalSpent - totalAdvance;
+  const remaining = totalBudget - totalSpent;
+  const pct = totalBudget > 0 ? Math.min(100, Math.round((totalSpent/totalBudget)*100)) : 0;
+
+  const advancePct = totalSpent > 0 ? Math.min(100, Math.round((totalAdvance/totalSpent)*100)) : 0;
+  const balancePct = totalSpent > 0 ? Math.min(100, Math.round((totalBalance/totalSpent)*100)) : 0;
+  const remainingPct = totalBudget > 0 ? Math.min(100, Math.max(0, Math.round((remaining/totalBudget)*100))) : 0;
+
+  const grid = document.getElementById('statGrid');
+  grid.innerHTML = `
+    ${gaugeCard('Total budget', totalBudget ? fmtMoney(totalBudget) : '—', totalBudget ? pct+'% committed' : 'Set it above', pct, 'var(--teal)')}
+    ${gaugeCard('Total committed', fmtMoney(totalSpent), `Across ${data.expenses.length} line item${data.expenses.length===1?'':'s'}`, totalBudget ? pct : (totalSpent>0?100:0), 'var(--violet)')}
+    ${gaugeCard('Advance paid', fmtMoney(totalAdvance), advancePct+'% of committed', advancePct, 'var(--teal)', 'good')}
+    ${gaugeCard('Balance due', fmtMoney(totalBalance), balancePct+'% still owed', balancePct, 'var(--rose)', totalBalance>0?'warn':'')}
+    ${totalBudget ? gaugeCard(remaining<0?'Over budget by':'Remaining budget', fmtMoney(Math.abs(remaining)), remaining<0?'over the set budget':'left to allocate', remainingPct, remaining<0?'var(--rose)':'var(--teal)', remaining<0?'warn':'good') : ''}
+  `;
+
+  function renderSpendBreakdown(containerId, groupField, emptyLabel){
+    const grouped = {};
+    data.expenses.forEach(e=>{
+      const key = (e[groupField] || '').trim() || 'Uncategorized';
+      if(groupField === 'category' && !e.category) return; // skip ungrouped rows in the category view rather than lumping them together
+      if(!grouped[key]) grouped[key] = {total:0, advance:0};
+      grouped[key].total += e.total||0;
+      grouped[key].advance += e.advance||0;
+    });
+    const container = document.getElementById(containerId);
+    const keys = Object.keys(grouped).sort();
+    if(keys.length === 0){
+      container.innerHTML = `<div class="empty-state" style="padding:20px;"><div class="display">No expenses ${groupField==='category'?'categorized':'logged'} yet</div><div>${emptyLabel}</div></div>`;
+      return;
+    }
+    const maxTotal = Math.max(...keys.map(k=>grouped[k].total), 1);
+    container.innerHTML = keys.map(k=>{
+      const g = grouped[k];
+      const balance = Math.max(0, g.total - g.advance);
+      const barWidth = Math.round((g.total/maxTotal)*100); // this group's total vs the biggest group
+      const paidShare = g.total > 0 ? Math.round((g.advance/g.total)*100) : 0; // paid vs balance within this group's own bar
+      return `<div style="margin-bottom:16px;">
+        <div style="display:flex; justify-content:space-between; align-items:baseline; font-size:13px; margin-bottom:4px;">
+          <strong>${esc(k)}</strong><span>${fmtMoney(g.total)}</span>
+        </div>
+        <div class="budget-bar-track" style="width:${barWidth}%;">
+          <div class="budget-bar-fill" style="width:${paidShare}%"></div>
+        </div>
+        <div style="display:flex; justify-content:space-between; font-size:11px; margin-top:4px;">
+          <span style="color:var(--teal);">Paid ${fmtMoney(g.advance)}</span>
+          <span style="color:${balance>0?'var(--rose)':'var(--text-faint)'};">${balance>0 ? 'Balance ' + fmtMoney(balance) : 'Fully paid'}</span>
+        </div>
+      </div>`;
+    }).join('');
+  }
+  renderSpendBreakdown('spendByEvent', 'event', 'Add expenses to see the breakdown by event.');
+  renderSpendBreakdown('spendByCategory', 'category', 'Set a category on your expenses to see the breakdown by category.');
+
+  const upcoming = data.tasks.filter(t=>!t.done).sort((a,b)=>(a.due||'9999').localeCompare(b.due||'9999')).slice(0,5);
+  const upDiv = document.getElementById('upcomingTasks');
+  if(upcoming.length===0){
+    upDiv.innerHTML = `<div class="empty-state"><div class="display">All caught up</div><div>No pending tasks — add some in the Checklist tab.</div></div>`;
+  } else {
+    const today = new Date().toISOString().slice(0,10);
+    upDiv.innerHTML = upcoming.map(t=>{
+      const overdue = t.due && t.due < today;
+      let dueLabel = t.due ? new Date(t.due+'T00:00:00').toLocaleDateString('en-IN',{day:'numeric',month:'short'}) : 'No date';
+      return `<div class="checklist-item">
+        <input type="checkbox" data-overview-task-toggle="${esc(t.id)}">
+        <div class="task-body">
+          <div class="task-title">${esc(t.title)}</div>
+          <div class="task-meta ${overdue?'overdue':''}">${t.category ? esc(t.category)+' · ' : ''}${overdue?'Overdue: ':'Due '}${dueLabel}</div>
+        </div>
+      </div>`;
+    }).join('');
+  }
+}
+document.getElementById('upcomingTasks').addEventListener('change', (e)=>{
+  const toggle = e.target.closest('[data-overview-task-toggle]');
+  if(toggle){
+    const item = data.tasks.find(x=>x.id === toggle.dataset.overviewTaskToggle);
+    if(item) toggleTask(item);
+  }
+});
+
+/* =========================================================================
+   EXPORT / IMPORT
+   ========================================================================= */
+function downloadBackup(){
+  const blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'wedding-planner-backup.json';
+  a.click();
+  URL.revokeObjectURL(url);
+  data.lastSyncedAt = new Date().toISOString();
+  save();
+  updateSyncStatus();
+}
+document.getElementById('exportBtn').addEventListener('click', downloadBackup);
+
+function relativeTimeFromNow(isoString){
+  const then = new Date(isoString);
+  const diffMs = Date.now() - then.getTime();
+  const mins = Math.round(diffMs / 60000);
+  if(mins < 1) return 'just now';
+  if(mins < 60) return mins + ' min' + (mins===1?'':'s') + ' ago';
+  const hours = Math.round(mins / 60);
+  if(hours < 24) return hours + ' hour' + (hours===1?'':'s') + ' ago';
+  const days = Math.round(hours / 24);
+  return days + ' day' + (days===1?'':'s') + ' ago';
+}
+function updateSyncStatus(){
+  const btn = document.getElementById('syncNowBtn');
+  if(data.lastSyncedAt){
+    btn.title = 'Last backed up ' + relativeTimeFromNow(data.lastSyncedAt) + ' — click to back up again';
+  } else {
+    btn.title = "You haven't backed up yet — click to download a backup file";
+  }
+}
+let _syncToastTimer = null;
+document.getElementById('syncNowBtn').addEventListener('click', (e)=>{
+  e.stopPropagation();
+  const btn = document.getElementById('syncNowBtn');
+  const toast = document.getElementById('syncStatus');
+  btn.classList.add('syncing');
+  downloadBackup();
+  setTimeout(()=> btn.classList.remove('syncing'), 700);
+
+  toast.textContent = 'Backup downloaded just now';
+  toast.classList.add('visible');
+  clearTimeout(_syncToastTimer);
+  _syncToastTimer = setTimeout(()=> toast.classList.remove('visible'), 2600);
+});
+
+document.getElementById('importBtn').addEventListener('click', ()=>{
+  document.getElementById('importFile').click();
+});
+document.getElementById('importFile').addEventListener('change', (evt)=>{
+  const file = evt.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = ()=>{
+    try{
+      const incoming = JSON.parse(reader.result);
+      showConfirm('This will replace your current data with the imported backup. Continue?', ()=>{
+        data = {
+          weddingDate: incoming.weddingDate || '',
+          totalBudget: incoming.totalBudget || '',
+          theme: incoming.theme || 'teal',
+          panelTheme: incoming.panelTheme || 'navy',
+          expenses: incoming.expenses || [],
+          vendors: incoming.vendors || [],
+          guests: incoming.guests || [],
+          tasks: incoming.tasks || [],
+          activity: incoming.activity || [],
+          lastSyncedAt: incoming.lastSyncedAt
+        };
+        logActivity('batch', 'Imported backup — replaced all data');
+        save();
+        applyTheme(data.theme);
+        renderSwatches();
+        applyPanelTheme(data.panelTheme);
+        renderPanelSwatches();
+        weddingDateInput.value = data.weddingDate;
+        totalBudgetInput.value = data.totalBudget;
+        renderAll();
+      }, 'Import backup');
+    }catch(err){
+      alert('Could not read that file. Please choose a valid backup JSON.');
+    }
+  };
+  reader.readAsText(file);
+  evt.target.value = '';
+});
+
+/* =========================================================================
+   INIT
+   ========================================================================= */
+/* =========================================================================
+   ACCENT COLOR THEME
+   ========================================================================= */
+const THEMES = [
+  { id:'red',     color:'#E8544B', name:'Red' },
+  { id:'blue',    color:'#4A9DE8', name:'Blue' },
+  { id:'green',   color:'#4BC77A', name:'Green' },
+  { id:'rose',    color:'#E2637B', name:'Pink' },
+  { id:'violet',  color:'#B78BF0', name:'Lavender' },
+  { id:'amber',   color:'#E8C24B', name:'Yellow' },
+  { id:'coral',   color:'#F0806B', name:'Coral' },
+  { id:'sky',     color:'#7EC8F0', name:'Sky' },
+  { id:'teal',    color:'#4DD0C4', name:'Teal' },
+  { id:'magenta', color:'#C74BC7', name:'Magenta' },
+  { id:'silver',  color:'#B8C2D0', name:'Silver' },
+  { id:'orange',  color:'#E88A3D', name:'Orange' }
+];
+function applyTheme(themeId){
+  if(themeId === 'teal') document.documentElement.removeAttribute('data-theme');
+  else document.documentElement.setAttribute('data-theme', themeId);
+  data.theme = themeId;
+  save();
+}
+function renderSwatches(){
+  const grid = document.getElementById('swatchGrid');
+  const current = data.theme || 'teal';
+  grid.innerHTML = THEMES.map(t=>
+    `<button class="swatch ${t.id===current?'active':''}" style="background:${t.color};" data-theme-pick="${t.id}" title="${t.name}" aria-label="${t.name}"></button>`
+  ).join('');
+}
+
+const PANEL_THEMES = [
+  { id:'navy',     color:'#16294D', name:'Navy' },
+  { id:'charcoal', color:'#2E2E38', name:'Charcoal' },
+  { id:'plum',     color:'#4A2768', name:'Plum' },
+  { id:'forest',   color:'#1F4A30', name:'Forest' },
+  { id:'wine',     color:'#5C2233', name:'Wine' },
+  { id:'slate',    color:'#243F5C', name:'Slate' },
+  { id:'ivory',    color:'#FBF3EC', name:'Ivory & Rose' }
+];
+function applyPanelTheme(panelId){
+  if(panelId === 'navy') document.documentElement.removeAttribute('data-panel');
+  else document.documentElement.setAttribute('data-panel', panelId);
+  data.panelTheme = panelId;
+  save();
+}
+function renderPanelSwatches(){
+  const grid = document.getElementById('panelSwatchGrid');
+  const current = data.panelTheme || 'navy';
+  grid.innerHTML = PANEL_THEMES.map(t=>
+    `<button class="panel-swatch ${t.id===current?'active':''}" style="background:${t.color};" data-panel-pick="${t.id}" title="${t.name}" aria-label="${t.name}"></button>`
+  ).join('');
+}
+document.getElementById('themeToggleBtn').addEventListener('click', (e)=>{
+  e.stopPropagation();
+  const popover = document.getElementById('themePopover');
+  const willOpen = !popover.classList.contains('active');
+  if(willOpen){
+    const btnRect = e.currentTarget.getBoundingClientRect();
+    popover.style.top = (btnRect.bottom + 10) + 'px';
+    // Anchor to the button's right edge, but keep the popover on-screen
+    // on narrow viewports where the button sits near the right edge.
+    const popW = 252 + 32; // approx min-width + padding
+    let left = btnRect.right - popW;
+    left = Math.max(10, Math.min(left, window.innerWidth - popW - 10));
+    popover.style.left = left + 'px';
+    popover.classList.add('active');
+  } else {
+    popover.classList.remove('active');
+  }
+});
+document.getElementById('swatchGrid').addEventListener('click', (e)=>{
+  const btn = e.target.closest('[data-theme-pick]');
+  if(!btn) return;
+  applyTheme(btn.dataset.themePick);
+  document.querySelectorAll('#swatchGrid .swatch').forEach(s=>s.classList.remove('active'));
+  btn.classList.add('active');
+});
+document.getElementById('panelSwatchGrid').addEventListener('click', (e)=>{
+  const btn = e.target.closest('[data-panel-pick]');
+  if(!btn) return;
+  applyPanelTheme(btn.dataset.panelPick);
+  document.querySelectorAll('#panelSwatchGrid .panel-swatch').forEach(s=>s.classList.remove('active'));
+  btn.classList.add('active');
+});
+document.addEventListener('click', (e)=>{
+  const popover = document.getElementById('themePopover');
+  if(popover.classList.contains('active') && !popover.contains(e.target) && e.target.id !== 'themeToggleBtn'){
+    popover.classList.remove('active');
+  }
+});
+
+function renderAll(){
+  applyTheme(data.theme || 'teal');
+  renderSwatches();
+  applyPanelTheme(data.panelTheme || 'navy');
+  renderPanelSwatches();
+  updateSyncStatus();
+  renderCountdown();
+  renderOverview();
+  renderExpenses();
+  renderVendors();
+  renderGuests();
+  renderTasks();
+  renderActivity();
+}
+renderAll();
+
+// Register the service worker so the app installs as a PWA and keeps
+// working offline after the first visit. Silently no-ops if the file is
+// opened directly from disk (file://) or served somewhere that doesn't
+// support service workers — the app still works fine without it, just
+// without offline/install support in that case.
+if('serviceWorker' in navigator && location.protocol !== 'file:'){
+  window.addEventListener('load', ()=>{
+    navigator.serviceWorker.register('service-worker.js').catch(()=>{});
+  });
+}
+
+</script>
+</body>
+</html>
